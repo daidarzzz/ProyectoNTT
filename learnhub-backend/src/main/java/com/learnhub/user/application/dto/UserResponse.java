@@ -1,6 +1,6 @@
 package com.learnhub.user.application.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record UserResponse(
     Long id,
@@ -9,5 +9,5 @@ public record UserResponse(
     String email,
     String rol,
     String estado,
-    LocalDateTime fechaAlta
+    LocalDate fechaAlta
 ) {}

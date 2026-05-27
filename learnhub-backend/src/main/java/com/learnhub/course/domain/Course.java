@@ -1,38 +1,42 @@
 package com.learnhub.course.domain;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Course {
 
     private Long id;
-    private String titulo;
+    private String nombre;
     private String descripcion;
     private String descripcionLarga;
     private BigDecimal precio;
-    private String imagenUrl;
     private Long idCategoria;
     private Integer horas;
     private String autor;
+    private List<String> imagenes;
 
-    public Course() {}
+    public Course() {
+        this.imagenes = new ArrayList<>();
+    }
 
-    public Course(String titulo, String descripcion, String descripcionLarga, BigDecimal precio,
-                  String imagenUrl, Long idCategoria, Integer horas, String autor) {
-        this.titulo = titulo;
+    public Course(String nombre, String descripcion, String descripcionLarga, BigDecimal precio,
+                  Long idCategoria, Integer horas, String autor) {
+        this.nombre = nombre;
         this.descripcion = descripcion;
         this.descripcionLarga = descripcionLarga;
         this.precio = precio;
-        this.imagenUrl = imagenUrl;
         this.idCategoria = idCategoria;
         this.horas = horas;
         this.autor = autor;
+        this.imagenes = new ArrayList<>();
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
@@ -43,9 +47,6 @@ public class Course {
     public BigDecimal getPrecio() { return precio; }
     public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
-    public String getImagenUrl() { return imagenUrl; }
-    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
-
     public Long getIdCategoria() { return idCategoria; }
     public void setIdCategoria(Long idCategoria) { this.idCategoria = idCategoria; }
 
@@ -54,4 +55,7 @@ public class Course {
 
     public String getAutor() { return autor; }
     public void setAutor(String autor) { this.autor = autor; }
+
+    public List<String> getImagenes() { return imagenes; }
+    public void setImagenes(List<String> imagenes) { this.imagenes = imagenes; }
 }

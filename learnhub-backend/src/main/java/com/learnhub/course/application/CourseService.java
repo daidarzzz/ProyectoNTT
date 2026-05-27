@@ -40,34 +40,38 @@ public class CourseService {
 
     public CourseResponse create(CreateCourseRequest request) {
         var course = new Course(
-            request.titulo(),
+            request.nombre(),
             request.descripcion(),
             request.descripcionLarga(),
             request.precio(),
-            request.imagenUrl(),
             request.idCategoria(),
             request.horas(),
             request.autor()
         );
+        if (request.imagenes() != null) {
+            course.setImagenes(request.imagenes());
+        }
         return toResponse(courseRepository.save(course));
     }
 
     public CourseResponse update(Long id, UpdateCourseRequest request) {
         var course = courseRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Curso", id));
-        course.setTitulo(request.titulo());
+        course.setNombre(request.nombre());
         course.setDescripcion(request.descripcion());
         course.setDescripcionLarga(request.descripcionLarga());
         course.setPrecio(request.precio());
-        course.setImagenUrl(request.imagenUrl());
         course.setIdCategoria(request.idCategoria());
         course.setHoras(request.horas());
         course.setAutor(request.autor());
+        if (request.imagenes() != null) {
+            course.setImagenes(request.imagenes());
+        }
         return toResponse(courseRepository.save(course));
     }
 
     public void delete(Long id) {
-        if (!courseRepository.findById(id).isPresent()) {
+        if (courseRepository.findById(id).isEmpty()) {
             throw new ResourceNotFoundException("Curso", id);
         }
         courseRepository.deleteById(id);
@@ -76,14 +80,14 @@ public class CourseService {
     private CourseResponse toResponse(Course course) {
         return new CourseResponse(
             course.getId(),
-            course.getTitulo(),
+            course.getNombre(),
             course.getDescripcion(),
             course.getDescripcionLarga(),
             course.getPrecio(),
-            course.getImagenUrl(),
             course.getIdCategoria(),
             course.getHoras(),
-            course.getAutor()
+            course.getAutor(),
+            course.getImagenes()
         );
     }
 }

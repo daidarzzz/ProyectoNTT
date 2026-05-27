@@ -98,7 +98,7 @@ public class OrderService {
     private OrderResponse toResponse(Order order) {
         var detalles = order.getDetalles().stream().map(d -> {
             String nombreCurso = courseRepository.findById(d.getIdCurso())
-                .map(c -> c.getTitulo())
+                .map(c -> c.getNombre())
                 .orElse("Curso");
             BigDecimal subtotal = d.getPrecioUnitario().multiply(BigDecimal.valueOf(d.getCantidad()));
             return new OrderDetailResponse(
