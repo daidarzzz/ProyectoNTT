@@ -34,6 +34,13 @@
         Carrito
       </a>
 
+      @if (auth.isLoggedIn()) {
+        <a routerLink="/mis-cursos" class="nav-link" (click)="menuOpen.set(false)">
+          <mat-icon>school</mat-icon>
+          Mis Cursos
+        </a>
+      }
+
       @if (auth.isAdmin()) {
         <a routerLink="/admin" class="nav-link admin-link" (click)="menuOpen.set(false)">
           <mat-icon>shield</mat-icon>

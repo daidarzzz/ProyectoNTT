@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadComponent: () => import('./components/carrito/carrito.component').then(m => m.CarritoComponent),
   },
   {
+    path: 'mis-cursos',
+    loadComponent: () => import('./components/mis-cursos/mis-cursos.component').then(m => m.MisCursosComponent),
+  },
+  {
     path: 'pago-exitoso',
     loadComponent: () => import('./components/pago-exitoso/pago-exitoso.component').then(m => m.PagoExitosoComponent),
   },

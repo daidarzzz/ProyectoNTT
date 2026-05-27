@@ -1,0 +1,69 @@
+<div class="mis-cursos-page">
+  <div class="mis-cursos-bg"></div>
+
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>school</mat-icon>
+      Mis Cursos
+    </h1>
+    <p class="page-subtitle">Todos los cursos que has adquirido</p>
+  </div>
+
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Cargando tus cursos...</p>
+    </div>
+  } @else if (misCursos().length === 0) {
+    <div class="empty-state glass">
+      <mat-icon class="empty-icon">library_books</mat-icon>
+      <h2>Aún no tienes cursos</h2>
+      <p>Explora nuestro catálogo y encuentra el curso perfecto para ti</p>
+      <a routerLink="/cursos" class="btn-glass-primary">
+        <mat-icon>explore</mat-icon>
+        Ver catálogo
+      </a>
+    </div>
+  } @else {
+    <div class="cursos-grid">
+      @for (item of misCursos(); track item.curso.id_curso) {
+        <article class="curso-card glass">
+          <div class="card-head" [style.background]="item.curso.gradiente_card">
+            <img class="card-img" [src]="item.curso.imagen_url" [alt]="item.curso.titulo" loading="lazy">
+            <div class="card-head-overlay"></div>
+            <div class="card-icon-circle">
+              <mat-icon>{{ item.curso.icono_abstracto || 'school' }}</mat-icon>
+            </div>
+            <span class="card-badge">{{ item.compra.estado_pago }}</span>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title">{{ item.curso.titulo }}</h3>
+            <p class="card-desc">{{ item.curso.descripcion }}</p>
+            <div class="card-meta">
+              <span class="card-meta-item">
+                <mat-icon>schedule</mat-icon>
+                {{ item.curso.horas }}h
+              </span>
+              <span class="card-meta-item">
+                <mat-icon>person</mat-icon>
+                {{ item.curso.autor.split(' ')[0] }}
+              </span>
+              <span class="card-meta-item">
+                <mat-icon>calendar_today</mat-icon>
+                {{ item.compra.fecha_compra | date:'dd MMM yyyy' }}
+              </span>
+            </div>
+          </div>
+          <div class="card-foot">
+            <span class="card-price-label">Pagaste</span>
+            <span class="card-price">${{ item.compra.precio_pagado.toFixed(2) }}</span>
+            <a [routerLink]="['/curso', item.curso.id_curso]" class="btn-glass-sm">
+              <mat-icon>visibility</mat-icon>
+              Ver curso
+            </a>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>
