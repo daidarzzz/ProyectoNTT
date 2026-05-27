@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay, tap } from 'rxjs';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
@@ -8,7 +8,11 @@ export class AuthService {
   private apiUrl = '/api/auth';
   private readonly STORAGE_KEY = 'learnhub_user';
 
-  currentUser = signal<User | null>(null);
+  private currentUserSignal = signal<User | null>(null);
+  readonly currentUser = this.currentUserSignal.asReadonly();
+
+  readonly isLoggedIn = computed(() => this.currentUserSignal() !== null);
+  readonly isAdmin = computed(() => this.currentUserSignal()?.rol === 'admin');
 
   private mockUsers: User[] = [
     { id: 1, nombre: 'Admin', apellidos: 'Sistema', email: 'admin@learnhub.com', rol: 'admin', estado: 'activo', password: 'admin123' },
@@ -18,7 +22,7 @@ export class AuthService {
   constructor(private http: HttpClient) {
     const stored = localStorage.getItem(this.STORAGE_KEY);
     if (stored) {
-      this.currentUser.set(JSON.parse(stored));
+      this.currentUserSignal.set(JSON.parse(stored));
     }
   }
 
@@ -30,7 +34,7 @@ export class AuthService {
         delay(500),
         tap(u => {
           localStorage.setItem(this.STORAGE_KEY, JSON.stringify(u));
-          this.currentUser.set(u);
+          this.currentUserSignal.set(u);
         })
       );
     }
@@ -52,17 +56,13 @@ export class AuthService {
       delay(500),
       tap(u => {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(u));
-        this.currentUser.set(u);
+        this.currentUserSignal.set(u);
       })
     );
   }
 
   logout(): void {
     localStorage.removeItem(this.STORAGE_KEY);
-    this.currentUser.set(null);
-  }
-
-  isLoggedIn(): boolean {
-    return this.currentUser() !== null;
+    this.currentUserSignal.set(null);
   }
 }

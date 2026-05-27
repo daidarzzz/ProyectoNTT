@@ -25,7 +25,7 @@ export class CarritoComponent {
   protected step: 'cart' | 'payment' | 'confirmation' = 'cart';
 
   get subtotal(): number {
-    return this.carrito.items().reduce((s, i) => s + i.precio, 0);
+    return this.carrito.cartItems().reduce((s, i) => s + i.precio, 0);
   }
 
   get tax(): number {
@@ -53,7 +53,7 @@ export class CarritoComponent {
     const user = this.auth.currentUser();
     if (!user) return;
 
-    const items = this.carrito.items();
+    const items = this.carrito.cartItems();
     if (items.length === 0) return;
 
     this.processing.set(true);
