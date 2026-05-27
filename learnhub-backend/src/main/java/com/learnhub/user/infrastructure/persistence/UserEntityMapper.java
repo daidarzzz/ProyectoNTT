@@ -7,8 +7,8 @@ import com.learnhub.user.domain.User;
 @Mapper(componentModel = "spring")
 public interface UserEntityMapper {
 
-    @Mapping(target = "id", ignore = true)
     User toDomain(UserEntity entity);
 
+    @Mapping(target = "id", ignore = true)
     UserEntity toEntity(User domain);
 }
