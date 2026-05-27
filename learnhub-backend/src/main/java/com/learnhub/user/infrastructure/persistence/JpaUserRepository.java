@@ -27,12 +27,12 @@ public class JpaUserRepository implements UserRepository {
 
     @Override
     public Optional<User> findById(Long id) {
-        return springRepo.findById(id).map(mapper::toDomain);
+        return springRepo.findByIdActive(id).map(mapper::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return springRepo.findByEmail(email).map(mapper::toDomain);
+        return springRepo.findByEmailActive(email).map(mapper::toDomain);
     }
 
     @Override
@@ -42,6 +42,42 @@ public class JpaUserRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
+        return springRepo.findAllActive().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<User> findAllIncludingDeleted() {
         return springRepo.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<User> findByIdIncludingDeleted(Long id) {
+        return springRepo.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public Optional<User> findByEmailIncludingDeleted(String email) {
+        return springRepo.findByEmail(email).map(mapper::toDomain);
+    }
+
+    @Override
+    public void hardDeleteById(Long id) {
+        springRepo.deleteById(id);
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(true);
+            springRepo.save(entity);
+        });
+    }
+
+    @Override
+    public void restoreById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(false);
+            springRepo.save(entity);
+        });
     }
 }

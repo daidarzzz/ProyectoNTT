@@ -26,8 +26,20 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    public List<CategoryResponse> findAllIncludingDeleted() {
+        return categoryRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public CategoryResponse findById(Long id) {
         var category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
+        return toResponse(category);
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryResponse findByIdIncludingDeleted(Long id) {
+        var category = categoryRepository.findByIdIncludingDeleted(id)
             .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
         return toResponse(category);
     }
@@ -50,6 +62,27 @@ public class CategoryService {
             throw new ResourceNotFoundException("Categoría", id);
         }
         categoryRepository.deleteById(id);
+    }
+
+    public void softDelete(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.restoreById(id);
     }
 
     private CategoryResponse toResponse(Category category) {

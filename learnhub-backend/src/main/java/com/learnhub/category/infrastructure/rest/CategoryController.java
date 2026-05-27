@@ -25,7 +25,11 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryResponse>> findAll() {
+    public ResponseEntity<List<CategoryResponse>> findAll(
+            @RequestParam(defaultValue = "false") boolean incluirEliminados) {
+        if (incluirEliminados) {
+            return ResponseEntity.ok(categoryService.findAllIncludingDeleted());
+        }
         return ResponseEntity.ok(categoryService.findAll());
     }
 
@@ -49,6 +53,24 @@ public class CategoryController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        categoryService.softDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/hard")
+    public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
+        categoryService.hardDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
+        categoryService.restore(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/cursos")

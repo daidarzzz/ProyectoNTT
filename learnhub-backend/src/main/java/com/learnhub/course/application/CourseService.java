@@ -27,8 +27,20 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
+    public List<CourseResponse> findAllIncludingDeleted() {
+        return courseRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public CourseResponse findById(Long id) {
         var course = courseRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Curso", id));
+        return toResponse(course);
+    }
+
+    @Transactional(readOnly = true)
+    public CourseResponse findByIdIncludingDeleted(Long id) {
+        var course = courseRepository.findByIdIncludingDeleted(id)
             .orElseThrow(() -> new ResourceNotFoundException("Curso", id));
         return toResponse(course);
     }
@@ -75,6 +87,27 @@ public class CourseService {
             throw new ResourceNotFoundException("Curso", id);
         }
         courseRepository.deleteById(id);
+    }
+
+    public void softDelete(Long id) {
+        if (courseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Curso", id);
+        }
+        courseRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (courseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Curso", id);
+        }
+        courseRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (courseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Curso", id);
+        }
+        courseRepository.restoreById(id);
     }
 
     private CourseResponse toResponse(Course course) {

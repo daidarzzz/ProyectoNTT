@@ -41,6 +41,44 @@ public class PurchaseService {
         return purchaseRepository.findByUsuarioId(usuarioId).stream().map(this::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<PurchaseResponse> findAll() {
+        return purchaseRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PurchaseResponse> findAllIncludingDeleted() {
+        return purchaseRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PurchaseResponse findByIdIncludingDeleted(Long id) {
+        var purchase = purchaseRepository.findByIdIncludingDeleted(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Compra", id));
+        return toResponse(purchase);
+    }
+
+    public void softDelete(Long id) {
+        if (purchaseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Compra", id);
+        }
+        purchaseRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (purchaseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Compra", id);
+        }
+        purchaseRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (purchaseRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Compra", id);
+        }
+        purchaseRepository.restoreById(id);
+    }
+
     private PurchaseResponse toResponse(Purchase purchase) {
         return new PurchaseResponse(
             purchase.getId(),

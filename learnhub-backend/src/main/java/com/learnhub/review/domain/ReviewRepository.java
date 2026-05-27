@@ -11,4 +11,10 @@ public interface ReviewRepository {
     Optional<Review> findByUsuarioIdAndCursoId(Long usuarioId, Long cursoId);
     boolean existsByUsuarioIdAndCursoId(Long usuarioId, Long cursoId);
     void deleteById(Long id);
+    List<Review> findAll();
+    List<Review> findAllIncludingDeleted();
+    Optional<Review> findByIdIncludingDeleted(Long id);
+    void hardDeleteById(Long id);
+    void softDeleteById(Long id);
+    void restoreById(Long id);
 }

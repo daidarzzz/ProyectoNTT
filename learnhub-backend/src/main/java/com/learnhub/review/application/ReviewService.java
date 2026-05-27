@@ -82,6 +82,44 @@ public class ReviewService {
         return reviews.stream().mapToInt(Review::getPuntuacion).average().orElse(0.0);
     }
 
+    @Transactional(readOnly = true)
+    public List<ReviewResponse> findAll() {
+        return reviewRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponse> findAllIncludingDeleted() {
+        return reviewRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponse findByIdIncludingDeleted(Long id) {
+        var review = reviewRepository.findByIdIncludingDeleted(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Reseña", id));
+        return toResponse(review);
+    }
+
+    public void softDelete(Long id) {
+        if (reviewRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Reseña", id);
+        }
+        reviewRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (reviewRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Reseña", id);
+        }
+        reviewRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (reviewRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Reseña", id);
+        }
+        reviewRepository.restoreById(id);
+    }
+
     private ReviewResponse toResponse(Review review) {
         String nombreUsuario = userRepository.findById(review.getIdUsuario())
             .map(u -> u.getNombre() + " " + u.getApellidos())

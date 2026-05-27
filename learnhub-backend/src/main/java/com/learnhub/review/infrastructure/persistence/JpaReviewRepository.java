@@ -27,31 +27,67 @@ public class JpaReviewRepository implements ReviewRepository {
 
     @Override
     public Optional<Review> findById(Long id) {
-        return springRepo.findById(id).map(mapper::toDomain);
+        return springRepo.findByIdActive(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Review> findByCursoId(Long cursoId) {
-        return springRepo.findByIdCurso(cursoId).stream().map(mapper::toDomain).toList();
+        return springRepo.findByIdCursoActive(cursoId).stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Review> findByUsuarioId(Long usuarioId) {
-        return springRepo.findByIdUsuario(usuarioId).stream().map(mapper::toDomain).toList();
+        return springRepo.findByIdUsuarioActive(usuarioId).stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public Optional<Review> findByUsuarioIdAndCursoId(Long usuarioId, Long cursoId) {
-        return springRepo.findByIdUsuarioAndIdCurso(usuarioId, cursoId).map(mapper::toDomain);
+        return springRepo.findByIdUsuarioAndIdCursoActive(usuarioId, cursoId).map(mapper::toDomain);
     }
 
     @Override
     public boolean existsByUsuarioIdAndCursoId(Long usuarioId, Long cursoId) {
-        return springRepo.existsByIdUsuarioAndIdCurso(usuarioId, cursoId);
+        return springRepo.existsByIdUsuarioAndIdCursoActive(usuarioId, cursoId);
     }
 
     @Override
     public void deleteById(Long id) {
         springRepo.deleteById(id);
+    }
+
+    @Override
+    public List<Review> findAll() {
+        return springRepo.findAllActive().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public List<Review> findAllIncludingDeleted() {
+        return springRepo.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<Review> findByIdIncludingDeleted(Long id) {
+        return springRepo.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public void hardDeleteById(Long id) {
+        springRepo.deleteById(id);
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(true);
+            springRepo.save(entity);
+        });
+    }
+
+    @Override
+    public void restoreById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(false);
+            springRepo.save(entity);
+        });
     }
 }

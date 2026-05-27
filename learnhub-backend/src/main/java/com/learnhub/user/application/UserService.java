@@ -29,8 +29,18 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    public List<UserResponse> findAllIncludingDeleted() {
+        return userRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
     public UserResponse findById(Long id) {
         var user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
+        return toResponse(user);
+    }
+
+    public UserResponse findByIdIncludingDeleted(Long id) {
+        var user = userRepository.findByIdIncludingDeleted(id)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
         return toResponse(user);
     }
@@ -67,6 +77,30 @@ public class UserService {
 
         user.setEstado(UserStatus.valueOf(request.estado().toUpperCase()));
         return toResponse(userRepository.save(user));
+    }
+
+    @Transactional
+    public void softDelete(Long id) {
+        if (userRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Usuario", id);
+        }
+        userRepository.softDeleteById(id);
+    }
+
+    @Transactional
+    public void hardDelete(Long id) {
+        if (userRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Usuario", id);
+        }
+        userRepository.hardDeleteById(id);
+    }
+
+    @Transactional
+    public void restore(Long id) {
+        if (userRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Usuario", id);
+        }
+        userRepository.restoreById(id);
     }
 
     private UserResponse toResponse(com.learnhub.user.domain.User user) {

@@ -37,6 +37,9 @@ public class UserEntity {
     @Column(name = "fecha_alta", nullable = false, updatable = false)
     private LocalDate fechaAlta;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public UserEntity() {}
 
     public Long getId() { return id; }
@@ -62,4 +65,7 @@ public class UserEntity {
 
     public LocalDate getFechaAlta() { return fechaAlta; }
     public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

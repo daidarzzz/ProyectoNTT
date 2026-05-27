@@ -8,4 +8,9 @@ public interface CategoryRepository {
     Optional<Category> findById(Long id);
     Category save(Category category);
     void deleteById(Long id);
+    List<Category> findAllIncludingDeleted();
+    Optional<Category> findByIdIncludingDeleted(Long id);
+    void hardDeleteById(Long id);
+    void softDeleteById(Long id);
+    void restoreById(Long id);
 }

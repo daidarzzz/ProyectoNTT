@@ -27,21 +27,52 @@ public class JpaOrderRepository implements OrderRepository {
 
     @Override
     public Optional<Order> findById(Long id) {
-        return springRepo.findById(id).map(mapper::toDomain);
+        return springRepo.findByIdActive(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Order> findByUsuarioId(Long usuarioId) {
-        return springRepo.findByIdUsuarioOrderByFechaDesc(usuarioId).stream().map(mapper::toDomain).toList();
+        return springRepo.findByIdUsuarioActive(usuarioId).stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public List<Order> findAll() {
-        return springRepo.findAll().stream().map(mapper::toDomain).toList();
+        return springRepo.findAllActive().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public void deleteById(Long id) {
         springRepo.deleteById(id);
+    }
+
+    @Override
+    public List<Order> findAllIncludingDeleted() {
+        return springRepo.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<Order> findByIdIncludingDeleted(Long id) {
+        return springRepo.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public void hardDeleteById(Long id) {
+        springRepo.deleteById(id);
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(true);
+            springRepo.save(entity);
+        });
+    }
+
+    @Override
+    public void restoreById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(false);
+            springRepo.save(entity);
+        });
     }
 }

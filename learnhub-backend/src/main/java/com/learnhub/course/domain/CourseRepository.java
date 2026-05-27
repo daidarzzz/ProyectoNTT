@@ -9,4 +9,9 @@ public interface CourseRepository {
     List<Course> findByCategoriaId(Long categoriaId);
     Course save(Course course);
     void deleteById(Long id);
+    List<Course> findAllIncludingDeleted();
+    Optional<Course> findByIdIncludingDeleted(Long id);
+    void hardDeleteById(Long id);
+    void softDeleteById(Long id);
+    void restoreById(Long id);
 }

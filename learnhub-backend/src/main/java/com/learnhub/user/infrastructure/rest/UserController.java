@@ -24,7 +24,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> findAll() {
+    public ResponseEntity<List<UserResponse>> findAll(
+            @RequestParam(defaultValue = "false") boolean incluirEliminados) {
+        if (incluirEliminados) {
+            return ResponseEntity.ok(userService.findAllIncludingDeleted());
+        }
         return ResponseEntity.ok(userService.findAll());
     }
 
@@ -37,5 +41,23 @@ public class UserController {
     public ResponseEntity<UserResponse> updateEstado(@PathVariable Long id,
                                                       @Valid @RequestBody EstadoRequest request) {
         return ResponseEntity.ok(userService.updateEstado(id, request));
+    }
+
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        userService.softDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
+        userService.hardDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
+        userService.restore(id);
+        return ResponseEntity.ok().build();
     }
 }

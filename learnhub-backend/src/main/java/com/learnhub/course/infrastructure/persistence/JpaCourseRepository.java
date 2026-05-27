@@ -20,17 +20,17 @@ public class JpaCourseRepository implements CourseRepository {
 
     @Override
     public List<Course> findAll() {
-        return springRepo.findAll().stream().map(mapper::toDomain).toList();
+        return springRepo.findAllActive().stream().map(mapper::toDomain).toList();
     }
 
     @Override
     public Optional<Course> findById(Long id) {
-        return springRepo.findById(id).map(mapper::toDomain);
+        return springRepo.findByIdActive(id).map(mapper::toDomain);
     }
 
     @Override
     public List<Course> findByCategoriaId(Long categoriaId) {
-        return springRepo.findByIdCategoria(categoriaId).stream().map(mapper::toDomain).toList();
+        return springRepo.findByIdCategoriaActive(categoriaId).stream().map(mapper::toDomain).toList();
     }
 
     @Override
@@ -43,5 +43,36 @@ public class JpaCourseRepository implements CourseRepository {
     @Override
     public void deleteById(Long id) {
         springRepo.deleteById(id);
+    }
+
+    @Override
+    public List<Course> findAllIncludingDeleted() {
+        return springRepo.findAll().stream().map(mapper::toDomain).toList();
+    }
+
+    @Override
+    public Optional<Course> findByIdIncludingDeleted(Long id) {
+        return springRepo.findById(id).map(mapper::toDomain);
+    }
+
+    @Override
+    public void hardDeleteById(Long id) {
+        springRepo.deleteById(id);
+    }
+
+    @Override
+    public void softDeleteById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(true);
+            springRepo.save(entity);
+        });
+    }
+
+    @Override
+    public void restoreById(Long id) {
+        springRepo.findById(id).ifPresent(entity -> {
+            entity.setDeleted(false);
+            springRepo.save(entity);
+        });
     }
 }

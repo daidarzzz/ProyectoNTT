@@ -26,7 +26,7 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> create(@AuthenticationPrincipal User user,
-                                                 @Valid @RequestBody OrderRequest request) {
+                                                  @Valid @RequestBody OrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(orderService.create(user.getId(), request));
     }
@@ -37,7 +37,11 @@ public class OrderController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderResponse>> findAll(@AuthenticationPrincipal User user) {
+    public ResponseEntity<List<OrderResponse>> findAll(
+            @RequestParam(defaultValue = "false") boolean incluirEliminados) {
+        if (incluirEliminados) {
+            return ResponseEntity.ok(orderService.findAllIncludingDeleted());
+        }
         return ResponseEntity.ok(orderService.findAll());
     }
 
@@ -54,5 +58,23 @@ public class OrderController {
                                                        @Valid @RequestBody EstadoOrderRequest request) {
         boolean isAdmin = user.getRol() == UserRole.ADMIN;
         return ResponseEntity.ok(orderService.updateEstado(id, request, isAdmin, user.getId()));
+    }
+
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        orderService.softDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/hard")
+    public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
+        orderService.hardDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
+        orderService.restore(id);
+        return ResponseEntity.ok().build();
     }
 }

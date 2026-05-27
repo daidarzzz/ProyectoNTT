@@ -28,6 +28,9 @@ public class ReviewEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime fecha;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public ReviewEntity() {}
 
     public Long getId() { return id; }
@@ -47,4 +50,7 @@ public class ReviewEntity {
 
     public LocalDateTime getFecha() { return fecha; }
     public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

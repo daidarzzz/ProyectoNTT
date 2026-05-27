@@ -39,7 +39,7 @@ public class ReviewController {
 
     @DeleteMapping("/resenas/{id}")
     public ResponseEntity<Void> delete(@AuthenticationPrincipal User user,
-                                       @PathVariable Long id) {
+                                        @PathVariable Long id) {
         boolean isAdmin = user.getRol() == UserRole.ADMIN;
         reviewService.delete(id, user.getId(), isAdmin);
         return ResponseEntity.noContent().build();
@@ -53,5 +53,32 @@ public class ReviewController {
     @GetMapping("/cursos/{cursoId}/resenas/media")
     public ResponseEntity<Double> averageByCurso(@PathVariable Long cursoId) {
         return ResponseEntity.ok(reviewService.averageByCurso(cursoId));
+    }
+
+    @GetMapping("/resenas")
+    public ResponseEntity<List<ReviewResponse>> findAll(
+            @RequestParam(defaultValue = "false") boolean incluirEliminados) {
+        if (incluirEliminados) {
+            return ResponseEntity.ok(reviewService.findAllIncludingDeleted());
+        }
+        return ResponseEntity.ok(reviewService.findAll());
+    }
+
+    @PutMapping("/resenas/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        reviewService.softDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/resenas/{id}/hard")
+    public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
+        reviewService.hardDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/resenas/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
+        reviewService.restore(id);
+        return ResponseEntity.ok().build();
     }
 }

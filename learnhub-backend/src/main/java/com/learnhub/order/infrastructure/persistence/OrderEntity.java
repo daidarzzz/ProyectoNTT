@@ -31,6 +31,9 @@ public class OrderEntity {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetailEntity> detalles = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public OrderEntity() {}
 
     public Long getId() { return id; }
@@ -50,4 +53,7 @@ public class OrderEntity {
 
     public List<OrderDetailEntity> getDetalles() { return detalles; }
     public void setDetalles(List<OrderDetailEntity> detalles) { this.detalles = detalles; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

@@ -37,6 +37,9 @@ public class CourseEntity {
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CourseImageEntity> imagenes = new ArrayList<>();
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public CourseEntity() {}
 
     public Long getId() { return id; }
@@ -65,4 +68,7 @@ public class CourseEntity {
 
     public List<CourseImageEntity> getImagenes() { return imagenes; }
     public void setImagenes(List<CourseImageEntity> imagenes) { this.imagenes = imagenes; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

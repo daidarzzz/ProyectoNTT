@@ -86,6 +86,13 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
+    public OrderResponse findByIdIncludingDeleted(Long id) {
+        var order = orderRepository.findByIdIncludingDeleted(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Pedido", id));
+        return toResponse(order);
+    }
+
+    @Transactional(readOnly = true)
     public List<OrderResponse> findByUsuario(Long usuarioId) {
         return orderRepository.findByUsuarioId(usuarioId).stream().map(this::toResponse).toList();
     }
@@ -93,6 +100,32 @@ public class OrderService {
     @Transactional(readOnly = true)
     public List<OrderResponse> findAll() {
         return orderRepository.findAll().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> findAllIncludingDeleted() {
+        return orderRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    public void softDelete(Long id) {
+        if (orderRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Pedido", id);
+        }
+        orderRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (orderRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Pedido", id);
+        }
+        orderRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (orderRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Pedido", id);
+        }
+        orderRepository.restoreById(id);
     }
 
     private OrderResponse toResponse(Order order) {

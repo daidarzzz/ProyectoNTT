@@ -9,4 +9,9 @@ public interface OrderRepository {
     List<Order> findByUsuarioId(Long usuarioId);
     List<Order> findAll();
     void deleteById(Long id);
+    List<Order> findAllIncludingDeleted();
+    Optional<Order> findByIdIncludingDeleted(Long id);
+    void hardDeleteById(Long id);
+    void softDeleteById(Long id);
+    void restoreById(Long id);
 }
