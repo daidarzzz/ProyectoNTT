@@ -20,11 +20,11 @@ VALUES (5, 'Introducción a Python', 'Curso básico de Python para principiantes
 ALTER TABLE cursos ALTER COLUMN id RESTART WITH 6;
 
 -- Curso imagenes
-INSERT INTO curso_imagenes (id, curso_id, url) VALUES (1, 1, '/uploads/cursos/mysql.jpg');
-INSERT INTO curso_imagenes (id, curso_id, url) VALUES (2, 2, '/uploads/cursos/java.jpg');
-INSERT INTO curso_imagenes (id, curso_id, url) VALUES (3, 3, '/uploads/cursos/htmlcss.jpg');
-INSERT INTO curso_imagenes (id, curso_id, url) VALUES (4, 4, '/uploads/cursos/javascript.jpg');
-INSERT INTO curso_imagenes (id, curso_id, url) VALUES (5, 5, '/uploads/cursos/python.jpg');
+INSERT INTO curso_imagenes (id, curso_id, url) VALUES (1, 1, 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&h=400&fit=crop');
+INSERT INTO curso_imagenes (id, curso_id, url) VALUES (2, 2, 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&h=400&fit=crop');
+INSERT INTO curso_imagenes (id, curso_id, url) VALUES (3, 3, 'https://images.unsplash.com/photo-1621839673705-6617adf9e890?w=600&h=400&fit=crop');
+INSERT INTO curso_imagenes (id, curso_id, url) VALUES (4, 4, 'https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=600&h=400&fit=crop');
+INSERT INTO curso_imagenes (id, curso_id, url) VALUES (5, 5, 'https://images.unsplash.com/photo-1526379095098-d400fd0bf935?w=600&h=400&fit=crop');
 ALTER TABLE curso_imagenes ALTER COLUMN id RESTART WITH 6;
 
 -- Nota: compras, pedidos, resenas sin seed — se crean via endpoints cuando existan usuarios

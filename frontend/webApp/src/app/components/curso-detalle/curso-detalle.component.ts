@@ -67,13 +67,19 @@ export class CursoDetalleComponent implements OnInit {
   }
 
   private loadResenas(id: number): void {
-    this.resenaService.getResenasByCurso(id).subscribe(data => this.resenas.set(data));
+    this.resenaService.getResenasByCurso(id).subscribe({
+      next: data => this.resenas.set(data),
+      error: () => this.resenas.set([]),
+    });
   }
 
   private loadComprasUsuario(): void {
     const user = this.auth.currentUser();
     if (!user) return;
-    this.compraService.getComprasByUser(user.id).subscribe(data => this.comprasUsuario.set(data));
+    this.compraService.getComprasByUser(user.id).subscribe({
+      next: data => this.comprasUsuario.set(data),
+      error: () => this.comprasUsuario.set([]),
+    });
   }
 
   submitReview(): void {

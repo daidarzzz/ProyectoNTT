@@ -83,10 +83,16 @@ export class AdminPanelComponent implements OnInit {
   saveCurso(): void {
     const form = this.editCursoForm();
     if (!form) return;
-    this.cursoService.updateCurso(form.id_curso, form).subscribe(() => {
-      this.snackBar.open('Curso actualizado', 'OK', { duration: 2000 });
-      this.cancelEditCurso();
-      this.loadCursos();
+    this.cursoService.updateCurso(form.id_curso, form).subscribe({
+      next: () => {
+        this.snackBar.open('Curso actualizado', 'OK', { duration: 2000 });
+        this.cancelEditCurso();
+        this.loadCursos();
+      },
+      error: (err) => {
+        console.error('saveCurso error', err);
+        this.snackBar.open('Error al guardar: ' + (err.error?.message || err.statusText || 'Error'), 'OK', { duration: 5000 });
+      },
     });
   }
 
@@ -108,14 +114,20 @@ export class AdminPanelComponent implements OnInit {
 
   createCurso(): void {
     const f = this.newCursoForm;
-    if (!f.titulo || !f.descripcion || !f.descripcion_larga || !f.precio) {
-      this.snackBar.open('Completa todos los campos obligatorios', 'OK', { duration: 2000 });
+    if (!f.titulo || !f.descripcion || !f.descripcion_larga || !f.autor || !f.precio || f.precio <= 0 || !f.horas || f.horas <= 0) {
+      this.snackBar.open('Completa todos los campos obligatorios (título, descripción, autor, precio > 0, horas > 0)', 'OK', { duration: 3000 });
       return;
     }
-    this.cursoService.createCurso(f as any).subscribe(() => {
-      this.snackBar.open('Curso creado', 'OK', { duration: 2000 });
-      this.showNewCurso.set(false);
-      this.loadCursos();
+    this.cursoService.createCurso(f as any).subscribe({
+      next: () => {
+        this.snackBar.open('Curso creado', 'OK', { duration: 2000 });
+        this.showNewCurso.set(false);
+        this.loadCursos();
+      },
+      error: (err) => {
+        console.error('createCurso error', err);
+        this.snackBar.open('Error al crear: ' + (err.error?.message || err.statusText || 'Error'), 'OK', { duration: 5000 });
+      },
     });
   }
 
