@@ -1,7 +1,7 @@
 <div class="checkout-page">
   <div class="checkout-bg"></div>
 
-  @if (step === 'cart' && carrito.cartItems().length === 0) {
+  @if (carrito.cartItems().length === 0) {
     <div class="empty-state">
       <div class="empty-icon-wrapper">
         <mat-icon>shopping_cart</mat-icon>
@@ -13,236 +13,62 @@
         Explorar Cursos
       </a>
     </div>
-  } @else if (step === 'confirmation') {
-    <div class="confirmation-state">
-      <div class="confirmation-icon">
-        <mat-icon>check_circle</mat-icon>
-      </div>
-      <h2>¡Compra realizada con éxito!</h2>
-      <p>Recibirás un email con los detalles de acceso a tus cursos.</p>
-      <div class="confirmation-actions">
-        <a routerLink="/cursos" class="btn-glass-primary">
-          <mat-icon>explore</mat-icon>
-          Seguir aprendiendo
-        </a>
-        <a routerLink="/" class="btn-glass">
-          <mat-icon>home</mat-icon>
-          Ir al inicio
-        </a>
-      </div>
-    </div>
   } @else {
     <div class="checkout-header">
-      <div class="steps-indicator">
-        <div class="step-item" [class.active]="step === 'cart'" [class.done]="step === 'payment'">
-          <span class="step-num">1</span>
-          <span class="step-label">Carrito</span>
+      <h1>Revisa tu Carrito</h1>
+    </div>
+    <div class="checkout-layout">
+      <div class="cart-items-section">
+        <h3 class="section-heading">Artículos ({{ carrito.cartCount() }})</h3>
+        @for (item of carrito.cartItems(); track item.id_curso) {
+          <div class="checkout-item glass">
+            <div class="item-visual" [style.background]="item.gradiente_card">
+              <mat-icon>{{ item.icono_abstracto || 'school' }}</mat-icon>
+            </div>
+            <div class="item-details">
+              <h4>{{ item.titulo }}</h4>
+              <p>{{ item.descripcion }}</p>
+              <span class="item-author">
+                <mat-icon>person</mat-icon>
+                {{ item.autor || 'Instructor' }}
+              </span>
+            </div>
+            <div class="item-right">
+              <span class="item-price">${{ item.precio.toFixed(2) }}</span>
+              <button class="item-remove" (click)="carrito.removeItem(item.id_curso)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="order-summary glass">
+        <h3 class="summary-title">Resumen</h3>
+        <div class="summary-rows">
+          <div class="summary-row">
+            <span>Subtotal ({{ carrito.cartCount() }} cursos)</span>
+            <span>${{ subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Impuestos (8%)</span>
+            <span>${{ tax.toFixed(2) }}</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>${{ total.toFixed(2) }}</span>
+          </div>
         </div>
-        <div class="step-line" [class.active]="step === 'payment'"></div>
-        <div class="step-item" [class.active]="step === 'payment'">
-          <span class="step-num">2</span>
-          <span class="step-label">Pago</span>
-        </div>
+        <button class="btn-glass-primary summary-cta" (click)="pagarConStripe()">
+          Pagar con Stripe
+          <mat-icon>credit_card</mat-icon>
+        </button>
+        <a routerLink="/cursos" class="btn-glass summary-back">
+          <mat-icon>arrow_back</mat-icon>
+          Seguir comprando
+        </a>
       </div>
     </div>
-
-    @if (step === 'cart') {
-      <div class="checkout-layout">
-        <div class="cart-items-section">
-          <h3 class="section-heading">Artículos ({{ carrito.cartCount() }})</h3>
-          @for (item of carrito.cartItems(); track item.id_curso) {
-            <div class="checkout-item glass">
-              <div class="item-visual" [style.background]="item.gradiente_card">
-                <mat-icon>{{ item.icono_abstracto || 'school' }}</mat-icon>
-              </div>
-              <div class="item-details">
-                <h4>{{ item.titulo }}</h4>
-                <p>{{ item.descripcion }}</p>
-                <span class="item-author">
-                  <mat-icon>person</mat-icon>
-                  {{ item.autor || 'Instructor' }}
-                </span>
-              </div>
-              <div class="item-right">
-                <span class="item-price">${{ item.precio.toFixed(2) }}</span>
-                <button class="item-remove" (click)="carrito.removeItem(item.id_curso)">
-                  <mat-icon>close</mat-icon>
-                </button>
-              </div>
-            </div>
-          }
-        </div>
-
-        <div class="order-summary glass">
-          <h3 class="summary-title">Resumen</h3>
-          <div class="summary-rows">
-            <div class="summary-row">
-              <span>Subtotal ({{ carrito.cartCount() }} cursos)</span>
-              <span>${{ subtotal.toFixed(2) }}</span>
-            </div>
-            <div class="summary-row">
-              <span>Impuestos (8%)</span>
-              <span>${{ tax.toFixed(2) }}</span>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-row summary-total">
-              <span>Total</span>
-              <span>${{ total.toFixed(2) }}</span>
-            </div>
-          </div>
-          <button class="btn-glass-primary summary-cta" (click)="goToPayment()">
-            Proceder al pago
-            <mat-icon>arrow_forward</mat-icon>
-          </button>
-          <a routerLink="/cursos" class="btn-glass summary-back">
-            <mat-icon>arrow_back</mat-icon>
-            Seguir comprando
-          </a>
-        </div>
-      </div>
-    }
-
-    @if (step === 'payment') {
-      <div class="payment-layout">
-        <div class="payment-form glass">
-          <h3 class="payment-title">Método de pago</h3>
-
-          <div class="payment-methods">
-            <button class="payment-method" [class.active]="paymentMethod() === 'card'" (click)="paymentMethod.set('card')">
-              <mat-icon>credit_card</mat-icon>
-              <div class="method-info">
-                <span class="method-name">Tarjeta</span>
-                <span class="method-desc">Visa, Mastercard, Amex</span>
-              </div>
-              <div class="method-check">
-                @if (paymentMethod() === 'card') {
-                  <mat-icon>radio_button_checked</mat-icon>
-                } @else {
-                  <mat-icon>radio_button_unchecked</mat-icon>
-                }
-              </div>
-            </button>
-            <button class="payment-method" [class.active]="paymentMethod() === 'paypal'" (click)="paymentMethod.set('paypal')">
-              <mat-icon>account_balance_wallet</mat-icon>
-              <div class="method-info">
-                <span class="method-name">PayPal</span>
-                <span class="method-desc">Pago rápido y seguro</span>
-              </div>
-              <div class="method-check">
-                @if (paymentMethod() === 'paypal') {
-                  <mat-icon>radio_button_checked</mat-icon>
-                } @else {
-                  <mat-icon>radio_button_unchecked</mat-icon>
-                }
-              </div>
-            </button>
-            <button class="payment-method" [class.active]="paymentMethod() === 'transfer'" (click)="paymentMethod.set('transfer')">
-              <mat-icon>account_balance</mat-icon>
-              <div class="method-info">
-                <span class="method-name">Transferencia</span>
-                <span class="method-desc">Depósito bancario directo</span>
-              </div>
-              <div class="method-check">
-                @if (paymentMethod() === 'transfer') {
-                  <mat-icon>radio_button_checked</mat-icon>
-                } @else {
-                  <mat-icon>radio_button_unchecked</mat-icon>
-                }
-              </div>
-            </button>
-          </div>
-
-          @if (paymentMethod() === 'card') {
-            <div class="card-form">
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Número de tarjeta</label>
-                  <div class="card-input-wrapper">
-                    <mat-icon class="card-input-icon">credit_card</mat-icon>
-                    <input class="card-input" type="text" placeholder="1234 5678 9012 3456" readonly>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Vencimiento</label>
-                  <div class="card-input-wrapper">
-                    <input class="card-input" type="text" placeholder="MM/AA" readonly>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>CVC</label>
-                  <div class="card-input-wrapper">
-                    <input class="card-input" type="text" placeholder="123" readonly>
-                  </div>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group full">
-                  <label>Titular</label>
-                  <div class="card-input-wrapper">
-                    <mat-icon class="card-input-icon">person</mat-icon>
-                    <input class="card-input" type="text" placeholder="Nombre del titular" readonly>
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-
-          @if (paymentMethod() === 'paypal') {
-            <div class="payment-info-box">
-              <mat-icon>info</mat-icon>
-              <p>Serás redirigido a PayPal para completar el pago de forma segura.</p>
-            </div>
-          }
-
-          @if (paymentMethod() === 'transfer') {
-            <div class="payment-info-box">
-              <mat-icon>info</mat-icon>
-              <p>Recibirás los datos bancarios para realizar la transferencia. El acceso se activará al confirmar el pago.</p>
-            </div>
-          }
-        </div>
-
-        <div class="order-summary glass">
-          <h3 class="summary-title">Resumen</h3>
-          <div class="summary-rows">
-            @for (item of carrito.cartItems(); track item.id_curso) {
-              <div class="summary-item-row">
-                <span class="summary-item-name">{{ item.titulo }}</span>
-                <span>${{ item.precio.toFixed(2) }}</span>
-              </div>
-            }
-            <div class="summary-divider"></div>
-            <div class="summary-row">
-              <span>Subtotal</span>
-              <span>${{ subtotal.toFixed(2) }}</span>
-            </div>
-            <div class="summary-row">
-              <span>Impuestos (8%)</span>
-              <span>${{ tax.toFixed(2) }}</span>
-            </div>
-            <div class="summary-divider"></div>
-            <div class="summary-row summary-total">
-              <span>Total</span>
-              <span>${{ total.toFixed(2) }}</span>
-            </div>
-          </div>
-          <button class="btn-glass-primary summary-cta" (click)="confirmarCompra()" [disabled]="processing()">
-            @if (processing()) {
-              <span class="spinner"></span>
-              Procesando...
-            } @else {
-              <mat-icon>lock</mat-icon>
-              Pagar ${{ total.toFixed(2) }}
-            }
-          </button>
-          <button class="btn-glass summary-back" (click)="goToCart()">
-            <mat-icon>arrow_back</mat-icon>
-            Volver al carrito
-          </button>
-        </div>
-      </div>
-    }
   }
 </div>

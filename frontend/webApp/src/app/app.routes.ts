@@ -27,6 +27,14 @@ export const routes: Routes = [
     loadComponent: () => import('./components/carrito/carrito.component').then(m => m.CarritoComponent),
   },
   {
+    path: 'pago-exitoso',
+    loadComponent: () => import('./components/pago-exitoso/pago-exitoso.component').then(m => m.PagoExitosoComponent),
+  },
+  {
+    path: 'pago-cancelado',
+    loadComponent: () => import('./components/pago-cancelado/pago-cancelado.component').then(m => m.PagoCanceladoComponent),
+  },
+  {
     path: 'admin',
     loadComponent: () => import('./components/admin-panel/admin-panel.component').then(m => m.AdminPanelComponent),
     canActivate: [adminGuard],

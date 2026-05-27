@@ -1,10 +1,10 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CarritoService } from '../../services/carrito.service';
-import { CompraService } from '../../services/compra.service';
 import { AuthService } from '../../services/auth.service';
+import { PaymentService } from '../../services/payment.service';
 
 @Component({
   selector: 'app-carrito',
@@ -15,14 +15,10 @@ import { AuthService } from '../../services/auth.service';
 })
 export class CarritoComponent {
   protected carrito = inject(CarritoService);
-  private compraService = inject(CompraService);
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-
-  protected paymentMethod = signal<'card' | 'paypal' | 'transfer'>('card');
-  protected processing = signal(false);
-  protected step: 'cart' | 'payment' | 'confirmation' = 'cart';
+  private paymentService = inject(PaymentService);
 
   get subtotal(): number {
     return this.carrito.cartItems().reduce((s, i) => s + i.precio, 0);
@@ -36,42 +32,24 @@ export class CarritoComponent {
     return this.subtotal + this.tax;
   }
 
-  goToPayment(): void {
+  pagarConStripe(): void {
     if (!this.auth.isLoggedIn()) {
       this.snackBar.open('Debes iniciar sesión para continuar', 'OK', { duration: 2000 });
       this.router.navigate(['/login']);
       return;
     }
-    this.step = 'payment';
-  }
-
-  goToCart(): void {
-    this.step = 'cart';
-  }
-
-  confirmarCompra(): void {
-    const user = this.auth.currentUser();
-    if (!user) return;
 
     const items = this.carrito.cartItems();
     if (items.length === 0) return;
 
-    this.processing.set(true);
-
-    let completed = 0;
-    items.forEach(curso => {
-      this.compraService.crearCompra({
-        id_usuario: user.id,
-        id_curso: curso.id_curso,
-        precio_pagado: curso.precio,
-      }).subscribe(() => {
-        completed++;
-        if (completed === items.length) {
-          this.processing.set(false);
-          this.step = 'confirmation';
-          this.carrito.clearCart();
-        }
-      });
+    this.paymentService.createCheckoutSession(items).subscribe({
+      next: (res) => {
+        window.location.href = res.url;
+      },
+      error: (err) => {
+        this.snackBar.open('Error al crear la sesión de pago. Inténtalo de nuevo.', 'OK', { duration: 3000 });
+        console.error(err);
+      }
     });
   }
 }
