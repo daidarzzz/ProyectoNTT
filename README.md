@@ -46,7 +46,7 @@ El usuario con rol de administrador tendrá acceso a un Panel de Administración
 
 Para realizar pruebas de flujo de pago dentro de la aplicación, utiliza los siguientes datos de prueba:
 
-* Número de tarjeta: 4242 4242 4242
+* Número de tarjeta: 4242 4242 4242 4242
 
 ---
 
