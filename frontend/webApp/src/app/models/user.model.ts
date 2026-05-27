@@ -4,8 +4,8 @@ export interface User {
   apellidos: string;
   email: string;
   password?: string;
-  rol: 'cliente' | 'admin';
-  estado: 'activo' | 'inactivo';
+  rol: string;
+  estado: string;
   fecha_alta?: string;
 }
 

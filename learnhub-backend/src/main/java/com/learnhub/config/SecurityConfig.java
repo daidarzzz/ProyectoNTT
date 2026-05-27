@@ -39,9 +39,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cursos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/cursos/*/resenas/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+
 
                 // Users
                 .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
@@ -71,6 +71,8 @@ public class SecurityConfig {
 
                 // Purchases
                 .requestMatchers("/api/compras/**").hasRole("ADMIN")
+
+
 
                 .anyRequest().authenticated()
             )

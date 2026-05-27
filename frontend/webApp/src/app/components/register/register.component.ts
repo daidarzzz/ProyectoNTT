@@ -1,20 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 
-function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
-  const password = group.get('password')?.value;
-  const confirm = group.get('confirmPassword')?.value;
-  return password === confirm ? null : { passwordsMismatch: true };
-}
-
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, MatIconModule],
+  imports: [RouterLink, FormsModule, MatIconModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -22,25 +16,39 @@ export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-  private fb = inject(FormBuilder);
 
-  protected hidePassword = true;
-  protected hideConfirm = true;
+  nombre = '';
+  apellidos = '';
+  email = '';
+  password = '';
+  confirmPassword = '';
+  hidePassword = true;
+  hideConfirm = true;
 
-  protected registerForm = this.fb.nonNullable.group({
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    apellidos: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    confirmPassword: ['', [Validators.required]],
-  }, { validators: passwordsMatchValidator });
+  get passwordsMatch(): boolean {
+    return this.password === this.confirmPassword;
+  }
+
+  get formValid(): boolean {
+    return !!(
+      this.nombre &&
+      this.apellidos &&
+      this.email &&
+      this.password &&
+      this.password.length >= 4 &&
+      this.passwordsMatch
+    );
+  }
 
   onSubmit(): void {
-    if (this.registerForm.invalid) return;
+    if (!this.formValid) return;
 
-    const { nombre, apellidos, email, password } = this.registerForm.getRawValue();
-
-    this.auth.register({ nombre, apellidos, email, password }).subscribe(user => {
+    this.auth.register({
+      nombre: this.nombre,
+      apellidos: this.apellidos,
+      email: this.email,
+      password: this.password,
+    }).subscribe(user => {
       this.snackBar.open(`¡Cuenta creada! Bienvenido, ${user.nombre}`, 'OK', { duration: 3000 });
       this.router.navigate(['/']);
     });
