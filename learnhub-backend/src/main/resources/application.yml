@@ -39,7 +39,7 @@ app:
 # ===================================================================
 stripe:
   api:
-    key: ${STRIPE_API_KEY}
+    key: sk_test_51TbQnZQYj4drowEiu51bDey8AvVKfRtEiiOgwKc8JMIl3fDJ8riOYtfPahC1qt7mdONX7iF7FkDoSFjNOgRPU7z70062DeHA17
 
 springdoc:
   api-docs:
