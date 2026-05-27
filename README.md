@@ -20,5 +20,8 @@ Abrir la IP local mostrada en la CLI (localhost) en el navegador
 # Crear admin
 Para crear un usuario admin debe tener el correo admin@gmail.com, y entonces ese usuario puede dar permiso de admin a quien desee.
 
+# Funciones de admin
+El admin tiene un panel de administración desde el cual puede dar permisos de admin a un usuario, crear cursos y editar los mismos.
+
 # Probar pago
-Debes poner de numero de tarjeta la 4242 4242 4242
+Debes poner de numero de tarjeta la 4242 4242 4242.
