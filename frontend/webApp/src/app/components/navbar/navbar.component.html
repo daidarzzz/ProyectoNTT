@@ -1,0 +1,59 @@
+<header class="navbar glass">
+  <div class="nav-inner">
+    <a routerLink="/" class="logo">
+      <span class="logo-icon">
+        <mat-icon>psychology</mat-icon>
+      </span>
+      <span class="logo-text">LearnHub</span>
+    </a>
+
+    <button class="mobile-toggle" (click)="toggleMenu()" aria-label="Menú">
+      <span class="hamburger" [class.open]="menuOpen()">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <nav class="nav-links" [class.open]="menuOpen()">
+      <a routerLink="/" class="nav-link" (click)="menuOpen.set(false)">
+        <mat-icon>home</mat-icon>
+        Inicio
+      </a>
+
+      <a routerLink="/cursos" class="nav-link" (click)="menuOpen.set(false)">
+        <mat-icon>explore</mat-icon>
+        Cursos
+      </a>
+
+      <a routerLink="/carrito" class="nav-link cart-link" (click)="menuOpen.set(false)">
+        <span class="cart-icon-wrapper">
+          <mat-icon>shopping_cart</mat-icon>
+          @if (carrito.count() > 0) {
+            <span class="cart-badge">{{ carrito.count() }}</span>
+          }
+        </span>
+        Carrito
+      </a>
+
+      <div class="nav-actions">
+        @if (auth.isLoggedIn()) {
+          <div class="user-avatar glass-strong">
+            <span class="avatar-text">{{ getInitials() }}</span>
+          </div>
+          <span class="user-name">{{ auth.currentUser()?.nombre }}</span>
+          <button class="btn-glass-sm logout-btn" (click)="auth.logout(); menuOpen.set(false)">
+            <mat-icon>logout</mat-icon>
+            Salir
+          </button>
+        } @else {
+          <a routerLink="/login" class="btn-glass" (click)="menuOpen.set(false)">
+            <mat-icon>login</mat-icon>
+            Entrar
+          </a>
+          <a routerLink="/register" class="btn-glass-primary" (click)="menuOpen.set(false)">
+            Registrarse
+          </a>
+        }
+      </div>
+    </nav>
+  </div>
+</header>

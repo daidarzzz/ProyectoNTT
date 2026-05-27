@@ -1,0 +1,61 @@
+@if (curso(); as c) {
+  <div class="detalle-page">
+    <div class="detalle-bg"></div>
+    <div class="detalle-container">
+      <div class="detalle-imagen glass">
+        <img [src]="c.imagen_url" [alt]="c.titulo">
+        <div class="img-glow"></div>
+      </div>
+
+      <div class="detalle-info">
+        <span class="detalle-badge">{{ (categorias())[c.id_categoria - 1]?.nombre || 'Curso' }}</span>
+        <h1 class="detalle-title">{{ c.titulo }}</h1>
+
+        <div class="detalle-meta">
+          <span class="meta-item">
+            <mat-icon>schedule</mat-icon>
+            {{ c.horas }} horas
+          </span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">
+            <mat-icon>person</mat-icon>
+            {{ c.autor }}
+          </span>
+          <span class="meta-divider"></span>
+          <span class="meta-item">
+            <mat-icon>star</mat-icon>
+            4.9 (120+)
+          </span>
+        </div>
+
+        <div class="detalle-divider"></div>
+
+        <p class="detalle-desc">{{ c.descripcion_larga }}</p>
+
+        <div class="detalle-divider"></div>
+
+        <div class="detalle-compra">
+          <div class="precio-wrapper">
+            <span class="precio-label">Precio</span>
+            <span class="detalle-precio">${{ c.precio.toFixed(2) }}</span>
+          </div>
+          <div class="compra-actions">
+            <button class="btn-glass-primary comprar-btn" (click)="addToCart()">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Añadir al Carrito
+            </button>
+            <a routerLink="/" class="btn-glass">
+              <mat-icon>arrow_back</mat-icon>
+              Volver
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="loading-state">
+    <div class="loading-spinner"></div>
+    <p>Cargando curso...</p>
+  </div>
+}

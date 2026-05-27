@@ -1,0 +1,327 @@
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-particles">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-badge">Plataforma #1 de aprendizaje online</div>
+      <h1 class="hero-title">Aprende sin<br>límites</h1>
+      <p class="hero-subtitle">Descubre cursos creados por expertos de la industria. Transforma tu carrera con aprendizaje práctico y mentoría personalizada.</p>
+      <div class="hero-actions">
+        <a class="btn-glass-primary hero-cta" routerLink="/cursos">
+          <mat-icon>explore</mat-icon>
+          Explorar Cursos
+        </a>
+        <a class="btn-glass hero-secondary" href="#beneficios">
+          <mat-icon>play_circle</mat-icon>
+          Ver demo
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">120+</span>
+          <span class="stat-label">Cursos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">15K</span>
+          <span class="stat-label">Estudiantes</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number">4.9</span>
+          <span class="stat-label">Valoración</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="constellation-3d">
+        <svg viewBox="0 0 300 300" class="constellation-svg">
+          <circle cx="150" cy="50" r="4" fill="#7c4dff" opacity="0.8">
+            <animate attributeName="r" values="3;6;3" dur="3s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="70" cy="120" r="3" fill="#e040fb" opacity="0.6">
+            <animate attributeName="r" values="2;5;2" dur="2.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="230" cy="100" r="3" fill="#7c4dff" opacity="0.7">
+            <animate attributeName="r" values="3;5;3" dur="3.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="200" r="2" fill="#00e5ff" opacity="0.5">
+            <animate attributeName="r" values="2;4;2" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="200" cy="210" r="3" fill="#e040fb" opacity="0.6">
+            <animate attributeName="r" values="2;5;2" dur="2.8s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="150" cy="140" r="5" fill="#7c4dff" opacity="0.9">
+            <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <line x1="150" y1="50" x2="70" y2="120" stroke="rgba(124,77,255,0.15)" stroke-width="1">
+            <animate attributeName="opacity" values="0.15;0.4;0.15" dur="4s" repeatCount="indefinite"/>
+          </line>
+          <line x1="150" y1="50" x2="230" y2="100" stroke="rgba(124,77,255,0.15)" stroke-width="1">
+            <animate attributeName="opacity" values="0.15;0.35;0.15" dur="3.5s" repeatCount="indefinite"/>
+          </line>
+          <circle cx="150" cy="140" r="25" fill="none" stroke="rgba(124,77,255,0.08)" stroke-width="1">
+            <animate attributeName="r" values="20;30;20" dur="5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.08;0.2;0.08" dur="5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="150" cy="140" r="40" fill="none" stroke="rgba(224,64,251,0.05)" stroke-width="1">
+            <animate attributeName="r" values="35;50;35" dur="7s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" values="0.05;0.15;0.05" dur="7s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BENEFICIOS / FEATURES ===== -->
+<section class="section beneficios-section" id="beneficios">
+  <div class="section-header">
+    <span class="section-badge">¿Por qué LearnHub?</span>
+    <h2 class="section-title">Todo lo que necesitas para crecer</h2>
+    <p class="section-desc">Una plataforma diseñada para impulsar tu carrera al siguiente nivel</p>
+  </div>
+  <div class="beneficios-grid">
+    @for (b of beneficios; track b.titulo) {
+      <div class="beneficio-card glass">
+        <div class="beneficio-icon-wrapper">
+          <mat-icon>{{ b.icono }}</mat-icon>
+        </div>
+        <h3 class="beneficio-titulo">{{ b.titulo }}</h3>
+        <p class="beneficio-desc">{{ b.desc }}</p>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ===== FEATURED COURSES ===== -->
+<section class="section featured-section">
+  <div class="section-header">
+    <span class="section-badge">Cursos destacados</span>
+    <h2 class="section-title">Los más populares</h2>
+    <p class="section-desc">Cientos de estudiantes ya están transformando su carrera con estos cursos</p>
+  </div>
+  <div class="featured-grid">
+    @for (curso of featuredCursos; track curso.id_curso) {
+      <div class="featured-card glass" (click)="addToCart(curso)">
+        <div class="featured-shine"></div>
+        <div class="featured-img" [style.background]="curso.gradiente_card">
+          <img [src]="curso.imagen_url" [alt]="curso.titulo" loading="lazy">
+          <div class="featured-img-overlay"></div>
+          <div class="featured-icon-circle">
+            <mat-icon>{{ curso.icono_abstracto || 'school' }}</mat-icon>
+          </div>
+          <span class="featured-badge">Popular</span>
+        </div>
+        <div class="featured-body">
+          <div class="featured-rating">
+            <mat-icon>star</mat-icon>
+            <mat-icon>star</mat-icon>
+            <mat-icon>star</mat-icon>
+            <mat-icon>star</mat-icon>
+            <mat-icon>star_half</mat-icon>
+            <span class="featured-rating-text">4.9</span>
+          </div>
+          <h3 class="featured-title">{{ curso.titulo }}</h3>
+          <p class="featured-desc">{{ curso.descripcion }}</p>
+          <div class="featured-meta">
+            <span><mat-icon>schedule</mat-icon> {{ curso.horas }}h</span>
+            <span><mat-icon>person</mat-icon> {{ curso.autor }}</span>
+          </div>
+          <div class="featured-footer">
+            <span class="featured-precio">${{ curso.precio.toFixed(2) }}</span>
+            <button class="btn-add-featured" (click)="$event.stopPropagation(); addToCart(curso)">
+              <mat-icon>add_shopping_cart</mat-icon>
+              Añadir
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+  <div class="featured-cta">
+    <a routerLink="/cursos" class="btn-glass-primary">
+      Ver todos los cursos
+      <mat-icon>arrow_forward</mat-icon>
+    </a>
+  </div>
+</section>
+
+<!-- ===== STATS / NUMBERS ===== -->
+<section class="stats-section">
+  <div class="stats-bg"></div>
+  <div class="stats-content">
+    <div class="section-header">
+      <span class="section-badge">Impacto global</span>
+      <h2 class="section-title">Resultados que hablan</h2>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card glass">
+        <span class="stat-card-number">15,000+</span>
+        <span class="stat-card-label">Estudiantes activos</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-card-number">120+</span>
+        <span class="stat-card-label">Cursos disponibles</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-card-number">4.9/5</span>
+        <span class="stat-card-label">Valoración media</span>
+      </div>
+      <div class="stat-card glass">
+        <span class="stat-card-number">92%</span>
+        <span class="stat-card-label">Tasa de empleabilidad</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section testimonials-section">
+  <div class="section-header">
+    <span class="section-badge">Testimonios</span>
+    <h2 class="section-title">Lo que dicen nuestros estudiantes</h2>
+    <p class="section-desc">Historias reales de personas que transformaron su carrera</p>
+  </div>
+  <div class="testimonials-grid">
+    @for (t of testimonios; track t.nombre) {
+      <div class="testimonial-card glass">
+        <div class="testimonial-stars">
+          @for (_ of [1,2,3,4,5]; track $index) {
+            <mat-icon>star</mat-icon>
+          }
+        </div>
+        <p class="testimonial-text">"{{ t.texto }}"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar" [style.background]="t.gradiente">
+            <span>{{ t.avatar }}</span>
+          </div>
+          <div class="testimonial-info">
+            <span class="testimonial-name">{{ t.nombre }}</span>
+            <span class="testimonial-rol">{{ t.rol }}</span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- ===== AI LEARNING PATH ===== -->
+<section class="section ai-path-section">
+  <div class="section-header">
+    <span class="section-badge">Tecnología IA</span>
+    <h2 class="section-title">Tu Ruta de Aprendizaje <span class="badge-ai">AI</span></h2>
+    <p class="section-desc">Nuestro algoritmo inteligente diseña un plan de estudio personalizado para ti</p>
+  </div>
+  <div class="ai-path-container glass">
+    <svg viewBox="0 0 900 260" class="path-svg">
+      <defs>
+        <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#7c4dff" stop-opacity="0.3"/>
+          <stop offset="50%" stop-color="#e040fb" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#7c4dff" stop-opacity="0.3"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+          <feMerge>
+            <feMergeNode in="coloredBlur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+      <circle cx="80" cy="200" r="18" fill="rgba(124,77,255,0.2)" stroke="#7c4dff" stroke-width="2" filter="url(#glow)"/>
+      <text x="80" y="205" text-anchor="middle" fill="white" font-size="10" font-family="Inter, sans-serif" font-weight="600">Tú</text>
+      <text x="80" y="238" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Inter, sans-serif">Inicio</text>
+      <circle cx="230" cy="130" r="12" fill="rgba(124,77,255,0.25)" stroke="#7c4dff" stroke-width="1.5" filter="url(#glow)">
+        <animate attributeName="r" values="10;14;10" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <text x="230" y="134" text-anchor="middle" fill="white" font-size="8" font-family="Inter, sans-serif" font-weight="600">1</text>
+      <text x="230" y="160" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="Inter, sans-serif">Angular</text>
+      <circle cx="400" cy="80" r="12" fill="rgba(224,64,251,0.25)" stroke="#e040fb" stroke-width="1.5" filter="url(#glow)">
+        <animate attributeName="r" values="10;14;10" dur="3.5s" repeatCount="indefinite"/>
+      </circle>
+      <text x="400" y="84" text-anchor="middle" fill="white" font-size="8" font-family="Inter, sans-serif" font-weight="600">2</text>
+      <text x="400" y="110" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="Inter, sans-serif">UX/UI</text>
+      <circle cx="570" cy="130" r="12" fill="rgba(0,229,255,0.25)" stroke="#00e5ff" stroke-width="1.5" filter="url(#glow)">
+        <animate attributeName="r" values="10;14;10" dur="3.2s" repeatCount="indefinite"/>
+      </circle>
+      <text x="570" y="134" text-anchor="middle" fill="white" font-size="8" font-family="Inter, sans-serif" font-weight="600">3</text>
+      <text x="570" y="160" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="Inter, sans-serif">Data Science</text>
+      <circle cx="720" cy="80" r="12" fill="rgba(124,77,255,0.25)" stroke="#7c4dff" stroke-width="1.5" filter="url(#glow)">
+        <animate attributeName="r" values="10;14;10" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <text x="720" y="84" text-anchor="middle" fill="white" font-size="8" font-family="Inter, sans-serif" font-weight="600">4</text>
+      <text x="720" y="110" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="9" font-family="Inter, sans-serif">Ciberseguridad</text>
+      <circle cx="850" cy="200" r="16" fill="rgba(0,229,255,0.15)" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4" filter="url(#glow)"/>
+      <text x="850" y="205" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="9" font-family="Inter, sans-serif" font-weight="600">Meta</text>
+      <text x="850" y="238" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="9" font-family="Inter, sans-serif">Certificación</text>
+      <path d="M98,195 Q160,170 218,135" fill="none" stroke="url(#pathGrad)" stroke-width="1.5" stroke-dasharray="6,4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M242,125 Q310,90 388,82" fill="none" stroke="url(#pathGrad)" stroke-width="1.5" stroke-dasharray="6,4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M412,82 Q480,110 558,128" fill="none" stroke="url(#pathGrad)" stroke-width="1.5" stroke-dasharray="6,4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M582,125 Q650,95 708,82" fill="none" stroke="url(#pathGrad)" stroke-width="1.5" stroke-dasharray="6,4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M730,90 Q790,150 838,195" fill="none" stroke="url(#pathGrad)" stroke-width="1.5" stroke-dasharray="6,4">
+        <animate attributeName="stroke-dashoffset" from="0" to="-20" dur="1.5s" repeatCount="indefinite"/>
+      </path>
+    </svg>
+  </div>
+</section>
+
+<!-- ===== CERTIFICATIONS ===== -->
+<section class="section cert-section">
+  <div class="section-header">
+    <span class="section-badge">Reconocimiento global</span>
+    <h2 class="section-title">Certificaciones Validadas</h2>
+    <p class="section-desc">Nuestros certificados son reconocidos por las empresas más innovadoras del mundo</p>
+  </div>
+  <div class="cert-container glass">
+    <div class="cert-track">
+      <div class="cert-logos">
+        <span class="cert-logo">Google</span>
+        <span class="cert-logo">Microsoft</span>
+        <span class="cert-logo">Meta</span>
+        <span class="cert-logo">AWS</span>
+        <span class="cert-logo">Apple</span>
+        <span class="cert-logo">IBM</span>
+      </div>
+      <div class="cert-logos">
+        <span class="cert-logo">Google</span>
+        <span class="cert-logo">Microsoft</span>
+        <span class="cert-logo">Meta</span>
+        <span class="cert-logo">AWS</span>
+        <span class="cert-logo">Apple</span>
+        <span class="cert-logo">IBM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-content">
+    <h2 class="cta-title">¿Listo para empezar tu viaje?</h2>
+    <p class="cta-desc">Únete a miles de estudiantes que ya están transformando su futuro. El primer paso es gratis.</p>
+    <div class="cta-actions">
+      <a routerLink="/register" class="btn-glass-primary cta-btn">
+        <mat-icon>person_add</mat-icon>
+        Crear cuenta gratis
+      </a>
+      <a routerLink="/cursos" class="btn-glass cta-btn-secondary">
+        <mat-icon>explore</mat-icon>
+        Explorar cursos
+      </a>
+    </div>
+  </div>
+</section>

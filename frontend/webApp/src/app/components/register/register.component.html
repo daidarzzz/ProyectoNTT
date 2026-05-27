@@ -1,0 +1,105 @@
+<div class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-card glass-strong">
+    <div class="auth-header">
+      <div class="auth-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+      <h1 class="auth-title">Crear Cuenta</h1>
+      <p class="auth-subtitle">Únete a LearnHub y empieza a aprender</p>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="onSubmit()">
+      <div class="name-row">
+        <div class="input-group">
+          <label class="input-label">Nombre</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">person</mat-icon>
+            <input class="glass-input" type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre" required #nombreInput="ngModel">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Apellidos</label>
+          <div class="input-wrapper">
+            <input class="glass-input" type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <div class="input-wrapper">
+          <mat-icon class="input-icon">email</mat-icon>
+          <input
+            class="glass-input"
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="tu@email.com"
+            required
+            pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}"
+            #emailInput="ngModel"
+          >
+        </div>
+        @if (emailInput.invalid && emailInput.touched) {
+          <span class="input-error">Ingresa un email válido</span>
+        }
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Contraseña</label>
+        <div class="input-wrapper">
+          <mat-icon class="input-icon">lock</mat-icon>
+          <input
+            class="glass-input"
+            [type]="hidePassword ? 'password' : 'text'"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Mínimo 4 caracteres"
+            required
+            #passInput="ngModel"
+            minlength="4"
+          >
+          <button type="button" class="toggle-pass" (click)="hidePassword = !hidePassword" tabindex="-1">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (passInput.invalid && passInput.touched) {
+          <span class="input-error">Mínimo 4 caracteres</span>
+        }
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Confirmar Contraseña</label>
+        <div class="input-wrapper">
+          <mat-icon class="input-icon">lock</mat-icon>
+          <input
+            class="glass-input"
+            [type]="hideConfirm ? 'password' : 'text'"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            placeholder="Repite la contraseña"
+            required
+            #confirmInput="ngModel"
+          >
+          <button type="button" class="toggle-pass" (click)="hideConfirm = !hideConfirm" tabindex="-1">
+            <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </div>
+        @if (confirmInput.touched && !passwordsMatch) {
+          <span class="input-error">Las contraseñas no coinciden</span>
+        }
+      </div>
+
+      <button type="submit" class="btn-glass-primary auth-submit" [disabled]="!formValid">
+        <mat-icon>person_add</mat-icon>
+        Crear Cuenta
+      </button>
+    </form>
+
+    <p class="auth-switch">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="cursos-page">
+  <div class="cursos-bg"></div>
+
+  <div class="cursos-header">
+    <h1 class="cursos-title">Explora nuestros cursos</h1>
+    <p class="cursos-subtitle">Diseñados por expertos para llevarte al siguiente nivel</p>
+  </div>
+
+  <div class="cursos-toolbar">
+    <div class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Buscar cursos..."
+        (input)="searchQuery.set($any($event.target).value)"
+      >
+    </div>
+    <div class="cursos-filtros">
+      <button
+        class="filter-pill"
+        [class.active]="filtroCategoria() === null"
+        (click)="setFiltro(null)"
+      >
+        Todos
+      </button>
+      @for (cat of categorias(); track cat.id_categoria) {
+        <button
+          class="filter-pill"
+          [class.active]="filtroCategoria() === cat.id_categoria"
+          (click)="setFiltro(cat.id_categoria)"
+        >
+          {{ cat.nombre }}
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (cursosFiltrados().length > 0) {
+    @let destacado = cursoDestacado();
+    @if (destacado) {
+      <section class="curso-destacado glass" (click)="addToCart(destacado)">
+        <div class="destacado-bg" [style.background]="destacado.gradiente_card"></div>
+        <div class="destacado-img">
+          <img [src]="destacado.imagen_url" [alt]="destacado.titulo" loading="lazy">
+        </div>
+        <div class="destacado-shine"></div>
+        <div class="destacado-content">
+          <div class="destacado-badge">Curso destacado</div>
+          <h2 class="destacado-titulo">{{ destacado.titulo }}</h2>
+          <p class="destacado-desc">{{ destacado.descripcion }}</p>
+          <div class="destacado-meta">
+            <span class="destacado-meta-item">
+              <mat-icon>schedule</mat-icon>
+              {{ destacado.horas }} horas
+            </span>
+            <span class="destacado-meta-item">
+              <mat-icon>person</mat-icon>
+              {{ destacado.autor }}
+            </span>
+            <span class="destacado-meta-item">
+              <mat-icon>star</mat-icon>
+              4.9
+            </span>
+          </div>
+          <div class="destacado-footer">
+            <span class="destacado-precio">${{ destacado.precio.toFixed(2) }}</span>
+            <div class="destacado-acciones">
+              <a [routerLink]="['/curso', destacado.id_curso]" class="btn-glass" (click)="$event.stopPropagation()">
+                <mat-icon>visibility</mat-icon>
+                Ver detalle
+              </a>
+              <button class="btn-add-large" (click)="$event.stopPropagation(); addToCart(destacado)">
+                <mat-icon>add_shopping_cart</mat-icon>
+                Añadir al carrito
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="destacado-icon">
+          <mat-icon>{{ destacado.icono_abstracto || 'school' }}</mat-icon>
+        </div>
+      </section>
+    }
+
+    @if (cursosRestantes().length > 0) {
+      <div class="cursos-grid">
+        @for (curso of cursosRestantes(); track curso.id_curso) {
+          <article class="curso-card glass">
+            <div class="card-shine"></div>
+            <div class="card-head" [style.background]="curso.gradiente_card">
+              <img class="card-img" [src]="curso.imagen_url" [alt]="curso.titulo" loading="lazy">
+              <div class="card-head-overlay"></div>
+              <div class="card-icon-circle">
+                <mat-icon>{{ curso.icono_abstracto || 'school' }}</mat-icon>
+              </div>
+              <span class="card-badge">{{ categorias()[curso.id_categoria - 1]?.nombre }}</span>
+            </div>
+            <div class="card-body">
+              <div class="card-rating">
+                <mat-icon>star</mat-icon>
+                <mat-icon>star</mat-icon>
+                <mat-icon>star</mat-icon>
+                <mat-icon>star</mat-icon>
+                <mat-icon>star_half</mat-icon>
+                <span class="rating-text">4.9</span>
+              </div>
+              <h3 class="card-title">{{ curso.titulo }}</h3>
+              <p class="card-desc">{{ curso.descripcion }}</p>
+              <div class="card-meta">
+                <span class="card-meta-item">
+                  <mat-icon>schedule</mat-icon>
+                  {{ curso.horas }}h
+                </span>
+                <span class="card-meta-item">
+                  <mat-icon>person</mat-icon>
+                  {{ curso.autor.split(' ')[0] }}
+                </span>
+              </div>
+            </div>
+            <div class="card-foot">
+              <span class="card-price">${{ curso.precio.toFixed(2) }}</span>
+              <div class="card-actions">
+                <a [routerLink]="['/curso', curso.id_curso]" class="btn-glass-sm">
+                  <mat-icon>info</mat-icon>
+                </a>
+                <button class="btn-add" (click)="addToCart(curso)">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  } @else {
+    <div class="sin-resultados">
+      <mat-icon class="sin-icon">search_off</mat-icon>
+      <h3>No encontramos cursos</h3>
+      <p>Intenta con otros filtros o términos de búsqueda</p>
+      <button class="btn-glass" (click)="setFiltro(null); searchQuery.set('')">
+        Limpiar filtros
+      </button>
+    </div>
+  }
+</div>
