@@ -19,3 +19,6 @@ Abrir la IP local mostrada en la CLI (localhost) en el navegador
 
 # Crear admin
 Para crear un usuario admin debe tener el correo admin@gmail.com, y entonces ese usuario puede dar permiso de admin a quien desee.
+
+# Probar pago
+Debes poner de numero de tarjeta la 4242 4242 4242
