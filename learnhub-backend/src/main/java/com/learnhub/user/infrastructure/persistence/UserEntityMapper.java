@@ -8,5 +8,6 @@ public interface UserEntityMapper {
 
     User toDomain(UserEntity entity);
 
+    @Mapping(target = "id", ignore = true)
     UserEntity toEntity(User domain);
 }

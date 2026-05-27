@@ -1,7 +1,6 @@
 package com.learnhub.user.application.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record UserResponse(
     Long id,
@@ -10,5 +9,5 @@ public record UserResponse(
     String email,
     String rol,
     String estado,
-    @JsonProperty("fecha_alta") LocalDate fechaAlta
+    LocalDateTime fechaAlta
 ) {}
