@@ -2,6 +2,8 @@ package com.learnhub.user.application;
 
 import com.learnhub.config.JwtUtil;
 import com.learnhub.shared.domain.exception.DuplicateResourceException;
+import com.learnhub.user.application.dto.ActualizarPerfilRequest;
+import com.learnhub.user.application.dto.CambiarPasswordRequest;
 import com.learnhub.user.application.dto.LoginRequest;
 import com.learnhub.user.application.dto.LoginResponse;
 import com.learnhub.user.application.dto.RegisterRequest;
@@ -62,6 +64,29 @@ public class AuthService {
         var user = userRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return toResponse(user);
+    }
+
+    public UserResponse updateProfile(Long id, ActualizarPerfilRequest request) {
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setNombre(request.nombre());
+        user.setApellidos(request.apellidos());
+        user.setEmail(request.email());
+
+        return toResponse(userRepository.save(user));
+    }
+
+    public void cambiarPassword(Long id, CambiarPasswordRequest request) {
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(request.passwordActual(), user.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual no es correcta");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.nuevaPassword()));
+        userRepository.save(user);
     }
 
     private UserResponse toResponse(User user) {

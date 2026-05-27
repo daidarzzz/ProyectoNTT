@@ -1,6 +1,7 @@
 package com.learnhub.category.application;
 
 import com.learnhub.category.application.dto.CategoryResponse;
+import com.learnhub.category.application.dto.CreateCategoryRequest;
 import com.learnhub.category.domain.Category;
 import com.learnhub.category.domain.CategoryRepository;
 import com.learnhub.shared.domain.exception.ResourceNotFoundException;
@@ -29,6 +30,26 @@ public class CategoryService {
         var category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
         return toResponse(category);
+    }
+
+    public CategoryResponse create(CreateCategoryRequest request) {
+        var category = new Category(request.nombre(), request.descripcion());
+        return toResponse(categoryRepository.save(category));
+    }
+
+    public CategoryResponse update(Long id, CreateCategoryRequest request) {
+        var category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
+        category.setNombre(request.nombre());
+        category.setDescripcion(request.descripcion());
+        return toResponse(categoryRepository.save(category));
+    }
+
+    public void delete(Long id) {
+        if (categoryRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.deleteById(id);
     }
 
     private CategoryResponse toResponse(Category category) {

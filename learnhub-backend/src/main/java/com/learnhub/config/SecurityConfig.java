@@ -39,8 +39,24 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cursos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/cursos/*/resenas/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+
+                .requestMatchers(HttpMethod.POST, "/api/cursos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/usuarios/*/estado").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/usuarios/*/pedidos").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET, "/api/pedidos").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
