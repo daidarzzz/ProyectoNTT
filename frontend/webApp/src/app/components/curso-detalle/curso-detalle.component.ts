@@ -84,7 +84,6 @@ export class CursoDetalleComponent implements OnInit {
     this.resenaService.createResena({
       id_curso: c.id_curso,
       id_usuario: user.id,
-      usuario_nombre: `${user.nombre} ${user.apellidos}`,
       puntuacion: this.reviewPuntuacion(),
       comentario: this.reviewComentario(),
     }).subscribe(() => {

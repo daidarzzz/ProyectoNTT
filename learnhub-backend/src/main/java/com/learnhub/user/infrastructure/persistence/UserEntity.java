@@ -1,6 +1,5 @@
 package com.learnhub.user.infrastructure.persistence;
 
-import com.learnhub.user.domain.User;
 import com.learnhub.user.domain.UserRole;
 import com.learnhub.user.domain.UserStatus;
 import jakarta.persistence.*;
@@ -39,6 +38,11 @@ public class UserEntity {
 
     @Column(nullable = false)
     private boolean deleted = false;
+
+    @PrePersist
+    public void prePersist() {
+        fechaAlta = LocalDate.now();
+    }
 
     public UserEntity() {}
 

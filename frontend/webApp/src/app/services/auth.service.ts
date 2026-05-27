@@ -19,7 +19,7 @@ interface LoginResponse {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = '/api/auth';
+  private apiUrl = 'http://localhost:8080/api/auth'; // TEMPORARY CHANGE FOR DIAGNOSTICS
   private readonly STORAGE_KEY = 'learnhub_user';
   private readonly TOKEN_KEY = 'learnhub_token';
 

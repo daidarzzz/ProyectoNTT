@@ -56,23 +56,15 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
 
-                // Orders
-                .requestMatchers(HttpMethod.GET, "/api/pedidos").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/estado").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/restore").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/pedidos/*/hard").hasRole("ADMIN")
-
-                // Reviews
-                .requestMatchers(HttpMethod.GET, "/api/resenas").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/resenas/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/resenas/*/restore").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/resenas/*/hard").hasRole("ADMIN")
-
                 // Purchases
+                .requestMatchers(HttpMethod.POST, "/api/compras").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/compras/usuario/{id}").authenticated()
                 .requestMatchers("/api/compras/**").hasRole("ADMIN")
 
-
+                // Reviews
+                .requestMatchers(HttpMethod.POST, "/api/resenas").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/resenas").permitAll()
+                .requestMatchers("/api/resenas/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
             )
