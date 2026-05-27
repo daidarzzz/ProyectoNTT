@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
-import { Curso, CursoDetalle } from '../models/curso.model';
+import { CursoDetalle } from '../models/curso.model';
 
 @Injectable({ providedIn: 'root' })
 export class CursoService {
   private apiUrl = '/api/cursos';
+  private readonly STORAGE_KEY = 'learnhub_cursos';
 
-  private mockCursos: CursoDetalle[] = [
+  private mockSignal = signal<CursoDetalle[]>([]);
+
+  private defaultCursos: CursoDetalle[] = [
     {
       id_curso: 1,
       titulo: 'Angular de cero a experto',
@@ -88,14 +91,59 @@ export class CursoService {
     },
   ];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.load();
+  }
+
+  private load(): void {
+    const stored = localStorage.getItem(this.STORAGE_KEY);
+    if (stored) {
+      this.mockSignal.set(JSON.parse(stored));
+    } else {
+      this.mockSignal.set(this.defaultCursos);
+      this.persist();
+    }
+  }
+
+  private persist(): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.mockSignal()));
+  }
 
   getCursos(): Observable<CursoDetalle[]> {
-    return of(this.mockCursos).pipe(delay(400));
+    return of(this.mockSignal()).pipe(delay(300));
   }
 
   getCursoById(id: number): Observable<CursoDetalle | undefined> {
-    const curso = this.mockCursos.find(c => c.id_curso === id);
-    return of(curso).pipe(delay(300));
+    const curso = this.mockSignal().find(c => c.id_curso === id);
+    return of(curso).pipe(delay(200));
+  }
+
+  createCurso(data: Omit<CursoDetalle, 'id_curso'>): Observable<CursoDetalle> {
+    const list = this.mockSignal();
+    const nuevo: CursoDetalle = {
+      ...data,
+      id_curso: Date.now() + Math.floor(Math.random() * 1000),
+    };
+    this.mockSignal.set([...list, nuevo]);
+    this.persist();
+    return of(nuevo).pipe(delay(300));
+  }
+
+  updateCurso(id: number, data: Partial<CursoDetalle>): Observable<CursoDetalle> {
+    const list = this.mockSignal();
+    const idx = list.findIndex(c => c.id_curso === id);
+    if (idx === -1) throw new Error('Curso no encontrado');
+    const updated = { ...list[idx], ...data };
+    list[idx] = updated;
+    this.mockSignal.set([...list]);
+    this.persist();
+    return of(updated).pipe(delay(200));
+  }
+
+  deleteCurso(id: number): Observable<void> {
+    const list = this.mockSignal().filter(c => c.id_curso !== id);
+    this.mockSignal.set(list);
+    this.persist();
+    return of(void 0).pipe(delay(200));
   }
 }

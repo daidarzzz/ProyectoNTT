@@ -34,6 +34,13 @@
         Carrito
       </a>
 
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin" class="nav-link admin-link" (click)="menuOpen.set(false)">
+          <mat-icon>shield</mat-icon>
+          Admin
+        </a>
+      }
+
       <div class="nav-actions">
         @if (auth.isLoggedIn()) {
           <div class="user-avatar glass-strong">

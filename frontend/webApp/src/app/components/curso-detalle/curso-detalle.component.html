@@ -52,6 +52,102 @@
         </div>
       </div>
     </div>
+
+    <!-- ===== RESEÑAS ===== -->
+    <div class="resenas-section">
+      <div class="resenas-divider"></div>
+      <h2 class="resenas-title">
+        <mat-icon>rate_review</mat-icon>
+        Reseñas
+        <span class="resenas-count">({{ resenas().length }})</span>
+      </h2>
+
+      @if (resenas().length > 0) {
+        <div class="resenas-list">
+          @for (r of resenas(); track r.id_resena) {
+            <div class="resena-card glass">
+              <div class="resena-header">
+                <div class="resena-avatar">{{ r.usuario_nombre.charAt(0) }}</div>
+                <div class="resena-meta">
+                  <span class="resena-author">{{ r.usuario_nombre }}</span>
+                  <span class="resena-date">{{ r.fecha | date:'dd MMM yyyy' }}</span>
+                </div>
+                <div class="resena-stars">
+                  @for (s of [1,2,3,4,5]; track s) {
+                    <mat-icon [class.filled]="s <= r.puntuacion">star</mat-icon>
+                  }
+                </div>
+              </div>
+              <p class="resena-text">{{ r.comentario }}</p>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="sin-resenas">Este curso aún no tiene reseñas. Sé el primero en comentar.</p>
+      }
+
+      @if (auth.isLoggedIn()) {
+        @if (puedeReseniar()) {
+          <div class="review-form glass-strong">
+            <h3 class="review-form-title">Escribe tu reseña</h3>
+            <div class="review-stars-input">
+              @for (s of [1,2,3,4,5]; track s) {
+                <button
+                  class="star-btn"
+                  (mouseenter)="setHoverPuntuacion(s)"
+                  (mouseleave)="setHoverPuntuacion(0)"
+                  (click)="setPuntuacion(s)"
+                  type="button"
+                >
+                  <mat-icon [class.filled]="s <= (hoverPuntuacion() || reviewPuntuacion())">
+                    {{ s <= (hoverPuntuacion() || reviewPuntuacion()) ? 'star' : 'star_border' }}
+                  </mat-icon>
+                </button>
+              }
+              @if (reviewPuntuacion() > 0) {
+                <span class="puntuacion-label">
+                  {{ reviewPuntuacion() === 1 ? 'Malo' : reviewPuntuacion() === 2 ? 'Regular' : reviewPuntuacion() === 3 ? 'Bueno' : reviewPuntuacion() === 4 ? 'Muy bueno' : 'Excelente' }}
+                </span>
+              }
+            </div>
+            <textarea
+              class="review-textarea"
+              placeholder="Cuéntanos tu experiencia con este curso..."
+              [(ngModel)]="reviewComentario"
+              rows="3"
+            ></textarea>
+            <div class="review-form-actions">
+              <button
+                class="btn-glass-primary"
+                [disabled]="reviewPuntuacion() === 0 || submitting()"
+                (click)="submitReview()"
+              >
+                @if (submitting()) {
+                  Publicando...
+                } @else {
+                  <mat-icon>send</mat-icon>
+                  Publicar reseña
+                }
+              </button>
+            </div>
+          </div>
+        } @else {
+          @let cursoActual = curso();
+          @if (cursoActual && comprasUsuario().some(cmp => cmp.id_curso === cursoActual.id_curso)) {
+            <p class="ya-resenio">Ya has escrito una reseña para este curso.</p>
+          } @else {
+            <p class="compra-requerida">Debes comprar este curso para poder reseñarlo.</p>
+          }
+        }
+      } @else {
+        <div class="login-para-reseniar">
+          <a routerLink="/login" class="btn-glass">
+            <mat-icon>login</mat-icon>
+            Inicia sesión para reseñar
+          </a>
+        </div>
+      }
+    </div>
   </div>
 } @else {
   <div class="loading-state">
