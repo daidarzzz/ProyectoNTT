@@ -1,0 +1,285 @@
+<div class="admin-page">
+  <div class="admin-bg"></div>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar glass">
+      <div class="sidebar-header">
+        <a routerLink="/" class="sidebar-back">
+          <mat-icon>arrow_back</mat-icon>
+          <span>Volver</span>
+        </a>
+        <h2 class="sidebar-title">Admin Panel</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="sidebar-btn" [class.active]="seccion() === 'cursos'" (click)="seccion.set('cursos')">
+          <mat-icon>school</mat-icon>
+          Cursos
+        </button>
+        <button class="sidebar-btn" [class.active]="seccion() === 'usuarios'" (click)="seccion.set('usuarios')">
+          <mat-icon>people</mat-icon>
+          Usuarios
+        </button>
+        <button class="sidebar-btn" [class.active]="seccion() === 'compras'" (click)="seccion.set('compras')">
+          <mat-icon>receipt</mat-icon>
+          Compras
+        </button>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <!-- ===== SECCIÓN CURSOS ===== -->
+      @if (seccion() === 'cursos') {
+        <div class="admin-section">
+          <div class="section-head">
+            <h3 class="section-title">Gestión de Cursos</h3>
+            <button class="btn-glass-primary btn-sm" (click)="toggleNewCurso()">
+              <mat-icon>add</mat-icon>
+              Nuevo curso
+            </button>
+          </div>
+
+          @if (showNewCurso()) {
+            <div class="inline-form glass-strong">
+              <h4 class="form-title">Nuevo curso</h4>
+              <div class="form-grid">
+                <label>Título <input [(ngModel)]="newCursoForm.titulo" placeholder="Título del curso" /></label>
+                <label>Autor <input [(ngModel)]="newCursoForm.autor" placeholder="Nombre del instructor" /></label>
+                <label>Precio <input type="number" step="0.01" [(ngModel)]="newCursoForm.precio" placeholder="0.00" /></label>
+                <label>Horas <input type="number" [(ngModel)]="newCursoForm.horas" placeholder="0" /></label>
+                <label>Categoría
+                  <select [(ngModel)]="newCursoForm.id_categoria">
+                    @for (cat of categorias(); track cat.id_categoria) {
+                      <option [value]="cat.id_categoria">{{ cat.nombre }}</option>
+                    }
+                  </select>
+                </label>
+                <label>Imagen URL <input [(ngModel)]="newCursoForm.imagen_url" placeholder="https://..." /></label>
+                <label class="full-width">Descripción corta <input [(ngModel)]="newCursoForm.descripcion" placeholder="Breve descripción" /></label>
+                <label class="full-width">Descripción larga <textarea [(ngModel)]="newCursoForm.descripcion_larga" placeholder="Descripción completa del curso"></textarea></label>
+              </div>
+              <div class="form-actions">
+                <button class="btn-glass" (click)="toggleNewCurso()">Cancelar</button>
+                <button class="btn-glass-primary" (click)="createCurso()">Crear curso</button>
+              </div>
+            </div>
+          }
+
+          <div class="admin-table-wrapper glass">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Título</th>
+                  <th>Autor</th>
+                  <th>Precio</th>
+                  <th>Horas</th>
+                  <th>Categoría</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (curso of cursos(); track curso.id_curso) {
+                  @if (editingCursoId() === curso.id_curso) {
+                    <tr class="edit-row">
+                      <td colspan="7">
+                        <div class="inline-form">
+                          <h4 class="form-title">Editando: {{ curso.titulo }}</h4>
+                          <div class="form-grid">
+                            <label>Título <input [(ngModel)]="editCursoForm()!.titulo" /></label>
+                            <label>Autor <input [(ngModel)]="editCursoForm()!.autor" /></label>
+                            <label>Precio <input type="number" step="0.01" [(ngModel)]="editCursoForm()!.precio" /></label>
+                            <label>Horas <input type="number" [(ngModel)]="editCursoForm()!.horas" /></label>
+                            <label>Categoría
+                              <select [(ngModel)]="editCursoForm()!.id_categoria">
+                                @for (cat of categorias(); track cat.id_categoria) {
+                                  <option [value]="cat.id_categoria">{{ cat.nombre }}</option>
+                                }
+                              </select>
+                            </label>
+                            <label>Imagen URL <input [(ngModel)]="editCursoForm()!.imagen_url" /></label>
+                            <label class="full-width">Descripción <input [(ngModel)]="editCursoForm()!.descripcion" /></label>
+                            <label class="full-width">Descripción larga <textarea [(ngModel)]="editCursoForm()!.descripcion_larga"></textarea></label>
+                          </div>
+                          <div class="form-actions">
+                            <button class="btn-glass" (click)="cancelEditCurso()">Cancelar</button>
+                            <button class="btn-glass-primary save-btn" (click)="saveCurso()">
+                              <mat-icon>save</mat-icon>
+                              Guardar
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  } @else {
+                    <tr>
+                      <td>{{ curso.id_curso }}</td>
+                      <td class="td-title">{{ curso.titulo }}</td>
+                      <td>{{ curso.autor }}</td>
+                      <td>${{ curso.precio.toFixed(2) }}</td>
+                      <td>{{ curso.horas }}h</td>
+                      <td>{{ categorias()[curso.id_categoria - 1]?.nombre }}</td>
+                      <td class="td-actions">
+                        <button class="btn-icon edit-btn" (click)="startEditCurso(curso)" title="Editar">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button class="btn-icon delete-btn" (click)="deleteCurso(curso.id_curso)" title="Eliminar">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- ===== SECCIÓN USUARIOS ===== -->
+      @if (seccion() === 'usuarios') {
+        <div class="admin-section">
+          <div class="section-head">
+            <h3 class="section-title">Gestión de Usuarios</h3>
+          </div>
+
+          <div class="admin-table-wrapper glass">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (user of usuarios(); track user.id) {
+                  @if (editingUserId() === user.id) {
+                    <tr class="edit-row">
+                      <td colspan="6">
+                        <div class="inline-form">
+                          <h4 class="form-title">Editando: {{ user.nombre }} {{ user.apellidos }}</h4>
+                          <div class="form-grid">
+                            <label>Nombre <input [(ngModel)]="editUserForm()!.nombre" /></label>
+                            <label>Apellidos <input [(ngModel)]="editUserForm()!.apellidos" /></label>
+                            <label>Email <input [(ngModel)]="editUserForm()!.email" /></label>
+                            <label>Rol
+                              <select [(ngModel)]="editUserForm()!.rol">
+                                <option value="cliente">Cliente</option>
+                                <option value="admin">Admin</option>
+                              </select>
+                            </label>
+                            <label>Estado
+                              <select [(ngModel)]="editUserForm()!.estado">
+                                <option value="activo">Activo</option>
+                                <option value="inactivo">Inactivo</option>
+                              </select>
+                            </label>
+                          </div>
+                          <div class="form-actions">
+                            <button class="btn-glass" (click)="cancelEditUser()">Cancelar</button>
+                            <button class="btn-glass-primary" (click)="saveUser(user.id)">
+                              <mat-icon>save</mat-icon>
+                              Guardar
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  } @else {
+                    <tr>
+                      <td>{{ user.id }}</td>
+                      <td class="td-title">{{ user.nombre }} {{ user.apellidos }}</td>
+                      <td>{{ user.email }}</td>
+                      <td>
+                        <span class="rol-badge" [class.admin]="user.rol === 'admin'" [class.cliente]="user.rol === 'cliente'">
+                          {{ user.rol }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="estado-badge" [class.activo]="user.estado === 'activo'" [class.inactivo]="user.estado === 'inactivo'">
+                          {{ user.estado }}
+                        </span>
+                      </td>
+                      <td class="td-actions">
+                        <button class="btn-icon edit-btn" (click)="startEditUser(user)" title="Editar">
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button class="btn-icon" [class.toggle-on]="user.rol === 'admin'" (click)="toggleRol(user)" title="Cambiar rol">
+                          <mat-icon>admin_panel_settings</mat-icon>
+                        </button>
+                        <button class="btn-icon" [class.toggle-on]="user.estado === 'activo'" (click)="toggleEstado(user)" title="Activar/Desactivar">
+                          <mat-icon>toggle_on</mat-icon>
+                        </button>
+                        <button class="btn-icon delete-btn" (click)="deleteUser(user.id)" title="Eliminar">
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <!-- ===== SECCIÓN COMPRAS ===== -->
+      @if (seccion() === 'compras') {
+        <div class="admin-section">
+          <div class="section-head">
+            <h3 class="section-title">Compras por Usuario</h3>
+          </div>
+
+          <div class="user-selector glass">
+            <label class="select-label">Seleccionar usuario</label>
+            <select class="admin-select" [(ngModel)]="selectedUserId" (change)="onUserSelect()">
+              <option [ngValue]="null">— Selecciona un usuario —</option>
+              @for (user of usuarios(); track user.id) {
+                <option [ngValue]="user.id">{{ user.nombre }} {{ user.apellidos }} ({{ user.email }})</option>
+              }
+            </select>
+          </div>
+
+          @if (selectedUserId() && userCompras().length > 0) {
+            <div class="admin-table-wrapper glass">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Curso</th>
+                    <th>Precio pagado</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (compra of userCompras(); track compra.id_compra; let i = $index) {
+                    <tr>
+                      <td>{{ i + 1 }}</td>
+                      <td class="td-title">{{ getCursoTitle(compra.id_curso) }}</td>
+                      <td>${{ compra.precio_pagado.toFixed(2) }}</td>
+                      <td>{{ compra.fecha_compra | date:'dd/MM/yyyy HH:mm' }}</td>
+                      <td>
+                        <span class="estado-badge completado">
+                          {{ compra.estado_pago }}
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else if (selectedUserId()) {
+            <div class="empty-state">
+              <mat-icon>receipt_long</mat-icon>
+              <p>Este usuario no tiene compras registradas</p>
+            </div>
+          }
+        </div>
+      }
+    </main>
+  </div>
+</div>
