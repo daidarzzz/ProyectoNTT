@@ -1,27 +1,49 @@
-# ProyectoNTT
-# Arranque backend
-Debes usar jdk 17
+# 🚀 Guía de Inicio Rápido - LearnHub
 
-El puerto 8080 debe estar disponible
+Este proyecto consta de un backend desarrollado en Java y un frontend desarrollado en Angular. A continuación, se detallan los pasos necesarios para desplegar y probar la aplicación en un entorno local.
 
-Una vez se cumple lo anterior, ejecutar LearnHubApplication
+---
 
-# Arranque frontend
-Se ha usado Angular 21
+## ☕ Arranque del Backend
 
-Acceder a la carpeta webApp desde el IDE
+### Requisitos previos:
+* **JDK:** Asegúrate de tener instalado JDK 17.
+* **Puerto:** El puerto 8080 debe estar libre y disponible.
 
-Abrir CLI (asegurandose de que se encuentra en webApp)
+### Pasos para iniciar:
+1. Una vez cumplidos los requisitos, localiza el archivo principal del proyecto.
+2. Ejecuta la clase LearnHubApplication.
 
-Utilizar comando npm start
+---
 
-Abrir la IP local mostrada en la CLI (localhost) en el navegador
+## 🅰️ Arranque del Frontend
 
-# Crear admin
-Para crear un usuario admin debe tener el correo admin@gmail.com, y entonces ese usuario puede dar permiso de admin a quien desee.
+El frontend ha sido desarrollado utilizando Angular 21.
 
-# Funciones de admin
-El admin tiene un panel de administración desde el cual puede dar permisos de admin a un usuario, crear cursos y editar los mismos.
+### Pasos para iniciar:
+1. Accede a la carpeta "webApp" desde tu IDE de preferencia.
+2. Abre la terminal o CLI y asegúrate de estar posicionado dentro del directorio "webApp".
+3. Ejecuta el comando: npm start
+4. Una vez compilado, abre en tu navegador la dirección IP local mostrada en la consola (localhost).
 
-# Probar pago
-Debes poner de numero de tarjeta la 4242 4242 4242.
+---
+
+## 🔑 Gestión de Administradores
+
+### Crear el primer Admin:
+* Para registrar el usuario administrador principal, debes utilizar obligatoriamente el correo electrónico: admin@gmail.com
+* Una vez registrado, este usuario tendrá la potestad de otorgar permisos de administrador a cualquier otro usuario del sistema.
+
+### Funciones del Admin:
+El usuario con rol de administrador tendrá acceso a un Panel de Administración exclusivo, desde el cual podrá:
+* 👥 Dar permisos de administrador a otros usuarios.
+* 📚 Crear nuevos cursos.
+* ✏️ Editar los cursos existentes.
+
+---
+
+## 💳 Entorno de Pruebas (Pasarela de Pago)
+
+Para realizar pruebas de flujo de pago dentro de la aplicación, utiliza los siguientes datos de prueba:
+
+* Número de tarjeta: 4242 4242 4242
