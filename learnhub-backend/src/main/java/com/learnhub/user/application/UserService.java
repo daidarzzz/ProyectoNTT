@@ -124,7 +124,7 @@ public class UserService {
             user.getEmail(),
             user.getRol().name(),
             user.getEstado().name(),
-            user.getFechaAlta()
+            user.getFechaAlta() != null ? user.getFechaAlta().atStartOfDay() : null
         );
     }
 }

@@ -97,7 +97,7 @@ public class AuthService {
             user.getEmail(),
             user.getRol().name(),
             user.getEstado().name(),
-            user.getFechaAlta()
+            user.getFechaAlta().atStartOfDay()
         );
     }
 }
