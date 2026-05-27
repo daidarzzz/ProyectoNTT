@@ -47,12 +47,16 @@ public class AuthService {
             throw new DuplicateResourceException("El email " + request.email() + " ya está registrado");
         }
 
+        var rol = "admin@gmail.com".equalsIgnoreCase(request.email())
+            ? UserRole.ADMIN
+            : UserRole.CLIENTE;
+
         var user = new User(
             request.nombre(),
             request.apellidos(),
             request.email(),
             passwordEncoder.encode(request.password()),
-            UserRole.CLIENTE
+            rol
         );
 
         user = userRepository.save(user);

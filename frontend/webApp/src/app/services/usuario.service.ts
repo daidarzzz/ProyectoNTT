@@ -33,8 +33,14 @@ export class UsuarioService {
     if (data.apellidos) body.apellidos = data.apellidos;
     if (data.email) body.email = data.email;
     if (data.rol) body.rol = data.rol === 'admin' ? 'ADMIN' : 'CLIENTE';
-    if (data.estado) body.estado = data.estado === 'activo' ? 'ACTIVO' : 'INACTIVO';
     return this.http.put<any>(`${this.apiUrl}/${id}`, body).pipe(
+      map(u => this.mapBackendUser(u))
+    );
+  }
+
+  updateEstado(id: number, estado: string): Observable<User> {
+    const body = { estado: estado === 'activo' ? 'ACTIVO' : 'INACTIVO' };
+    return this.http.put<any>(`${this.apiUrl}/${id}/estado`, body).pipe(
       map(u => this.mapBackendUser(u))
     );
   }

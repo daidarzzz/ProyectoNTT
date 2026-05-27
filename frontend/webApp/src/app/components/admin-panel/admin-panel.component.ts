@@ -147,29 +147,63 @@ export class AdminPanelComponent implements OnInit {
   saveUser(userId: number): void {
     const form = this.editUserForm();
     if (!form) return;
-    this.usuarioService.updateUsuario(userId, form).subscribe(() => {
-      this.snackBar.open('Usuario actualizado', 'OK', { duration: 2000 });
-      this.cancelEditUser();
-      this.syncCurrentUserIfNeeded(userId);
-      this.loadUsuarios();
+    this.usuarioService.updateUsuario(userId, form).subscribe({
+      next: () => {
+        if (form.estado) {
+          this.usuarioService.updateEstado(userId, form.estado).subscribe({
+            next: () => this.finishSaveUser(userId),
+            error: () => this.finishSaveUser(userId),
+          });
+        } else {
+          this.finishSaveUser(userId);
+        }
+      },
+      error: (err) => {
+        console.error('saveUser error', err);
+        this.snackBar.open('Error al guardar: ' + (err.error?.message || err.statusText || 'Error'), 'OK', { duration: 5000 });
+      },
     });
+  }
+
+  private finishSaveUser(userId: number): void {
+    this.snackBar.open('Usuario actualizado', 'OK', { duration: 2000 });
+    this.cancelEditUser();
+    this.syncCurrentUserIfNeeded(userId);
+    this.loadUsuarios();
   }
 
   toggleRol(user: User): void {
     const newRol = user.rol === 'admin' ? 'cliente' : 'admin';
-    this.usuarioService.updateUsuario(user.id, { rol: newRol }).subscribe(() => {
-      this.snackBar.open(`Usuario ahora es ${newRol}`, 'OK', { duration: 1500 });
-      this.syncCurrentUserIfNeeded(user.id);
-      this.loadUsuarios();
+    this.usuarioService.updateUsuario(user.id, {
+      nombre: user.nombre,
+      apellidos: user.apellidos,
+      email: user.email,
+      rol: newRol,
+    }).subscribe({
+      next: () => {
+        this.snackBar.open(`Usuario ahora es ${newRol}`, 'OK', { duration: 1500 });
+        this.syncCurrentUserIfNeeded(user.id);
+        this.loadUsuarios();
+      },
+      error: (err) => {
+        console.error('toggleRol error', err);
+        this.snackBar.open('Error al cambiar rol: ' + (err.error?.message || err.statusText || 'Error'), 'OK', { duration: 5000 });
+      },
     });
   }
 
   toggleEstado(user: User): void {
     const newEstado = user.estado === 'activo' ? 'inactivo' : 'activo';
-    this.usuarioService.updateUsuario(user.id, { estado: newEstado }).subscribe(() => {
-      this.snackBar.open(`Usuario ${newEstado === 'activo' ? 'activado' : 'desactivado'}`, 'OK', { duration: 1500 });
-      this.syncCurrentUserIfNeeded(user.id);
-      this.loadUsuarios();
+    this.usuarioService.updateEstado(user.id, newEstado).subscribe({
+      next: () => {
+        this.snackBar.open(`Usuario ${newEstado === 'activo' ? 'activado' : 'desactivado'}`, 'OK', { duration: 1500 });
+        this.syncCurrentUserIfNeeded(user.id);
+        this.loadUsuarios();
+      },
+      error: (err) => {
+        console.error('toggleEstado error', err);
+        this.snackBar.open('Error al cambiar estado: ' + (err.error?.message || err.statusText || 'Error'), 'OK', { duration: 5000 });
+      },
     });
   }
 

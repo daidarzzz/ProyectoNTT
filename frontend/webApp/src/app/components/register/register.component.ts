@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 
 function passwordsMatchValidator(group: AbstractControl): ValidationErrors | null {
@@ -40,9 +41,21 @@ export class RegisterComponent {
 
     const { nombre, apellidos, email, password } = this.registerForm.getRawValue();
 
-    this.auth.register({ nombre, apellidos, email, password }).subscribe(user => {
-      this.snackBar.open(`¡Cuenta creada! Bienvenido, ${user.nombre}`, 'OK', { duration: 3000 });
-      this.router.navigate(['/']);
+    this.auth.register({ nombre, apellidos, email, password }).subscribe({
+      next: (user) => {
+        this.snackBar.open(`¡Cuenta creada! Bienvenido, ${user.nombre}`, 'OK', { duration: 3000 });
+        this.router.navigate(['/']);
+      },
+      error: (err: HttpErrorResponse) => {
+        const msg = err.status === 409
+          ? 'Este email ya está registrado. Prueba con otro o inicia sesión.'
+          : err.status === 400
+          ? 'Revisa los datos ingresados.'
+          : err.status === 0
+          ? 'El servidor no está disponible. ¿Has iniciado el backend?'
+          : 'Error del servidor. Intenta más tarde.';
+        this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+      }
     });
   }
 }

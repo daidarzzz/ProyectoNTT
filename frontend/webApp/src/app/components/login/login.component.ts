@@ -32,19 +32,17 @@ export class LoginComponent {
     const { email, password } = this.loginForm.getRawValue();
 
     this.auth.login(email, password).subscribe({
-      next: (res) => {
-        if (!res) {
-          this.snackBar.open('Credenciales incorrectas', 'OK', { duration: 2000 });
-          return;
-        }
-        this.snackBar.open(`Bienvenido, ${res.nombre}!`, 'OK', { duration: 2000 });
+      next: (user) => {
+        this.snackBar.open(`Bienvenido, ${user.nombre}!`, 'OK', { duration: 2000 });
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
         const msg = err.status === 401
-          ? 'Credenciales incorrectas. Intenta de nuevo.'
+          ? 'Credenciales incorrectas.'
+          : err.status === 0
+          ? 'El servidor no está disponible. ¿Has iniciado el backend?'
           : 'Error del servidor. Intenta más tarde.';
-        this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
+        this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
       }
     });
   }

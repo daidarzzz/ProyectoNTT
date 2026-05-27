@@ -54,14 +54,13 @@ export class AuthService {
     this.currentUserSignal.set(user);
   }
 
-  login(email: string, password: string): Observable<User | null> {
+  login(email: string, password: string): Observable<User> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
       map(res => {
         const user = this.mapBackendUser(res.user);
         this.persistSession(user, res.token);
         return user;
-      }),
-      catchError(() => of(null))
+      })
     );
   }
 
