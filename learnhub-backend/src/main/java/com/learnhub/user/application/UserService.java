@@ -1,11 +1,14 @@
 package com.learnhub.user.application;
 
+import com.learnhub.shared.domain.exception.DuplicateResourceException;
 import com.learnhub.shared.domain.exception.ResourceNotFoundException;
-import com.learnhub.user.application.dto.ActualizarPerfilRequest;
-import com.learnhub.user.application.dto.CambiarPasswordRequest;
+import com.learnhub.user.application.dto.CreateUserRequest;
 import com.learnhub.user.application.dto.EstadoRequest;
+import com.learnhub.user.application.dto.UpdateUserRequest;
 import com.learnhub.user.application.dto.UserResponse;
+import com.learnhub.user.domain.User;
 import com.learnhub.user.domain.UserRepository;
+import com.learnhub.user.domain.UserRole;
 import com.learnhub.user.domain.UserStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -46,28 +49,38 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateProfile(Long id, ActualizarPerfilRequest request) {
-        var user = userRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
+    public UserResponse createUser(CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new DuplicateResourceException("El email " + request.email() + " ya está registrado");
+        }
 
-        user.setNombre(request.nombre());
-        user.setApellidos(request.apellidos());
-        user.setEmail(request.email());
+        UserRole rol = UserRole.CLIENTE;
+        if (request.rol() != null && !request.rol().isBlank()) {
+            rol = UserRole.valueOf(request.rol().toUpperCase());
+        }
+
+        var user = new User(
+            request.nombre(),
+            request.apellidos(),
+            request.email(),
+            passwordEncoder.encode(request.password()),
+            rol
+        );
 
         return toResponse(userRepository.save(user));
     }
 
     @Transactional
-    public void cambiarPassword(Long id, CambiarPasswordRequest request) {
-        var user = userRepository.findById(id)
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+        var user = userRepository.findByIdIncludingDeleted(id)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario", id));
 
-        if (!passwordEncoder.matches(request.passwordActual(), user.getPassword())) {
-            throw new IllegalArgumentException("La contraseña actual no es correcta");
-        }
+        user.setNombre(request.nombre());
+        user.setApellidos(request.apellidos());
+        user.setEmail(request.email());
+        user.setRol(UserRole.valueOf(request.rol().toUpperCase()));
 
-        user.setPassword(passwordEncoder.encode(request.nuevaPassword()));
-        userRepository.save(user);
+        return toResponse(userRepository.save(user));
     }
 
     @Transactional
@@ -103,7 +116,7 @@ public class UserService {
         userRepository.restoreById(id);
     }
 
-    private UserResponse toResponse(com.learnhub.user.domain.User user) {
+    private UserResponse toResponse(User user) {
         return new UserResponse(
             user.getId(),
             user.getNombre(),

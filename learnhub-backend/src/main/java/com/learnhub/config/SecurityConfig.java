@@ -43,41 +43,34 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
 
-                // Courses - admin write
+                // Users
+                .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+
+                // Courses
                 .requestMatchers(HttpMethod.POST, "/api/cursos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasRole("ADMIN")
 
-                // Categories - admin write
+                // Categories
                 .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
 
-                // Users - admin only
-                .requestMatchers(HttpMethod.GET, "/api/usuarios").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/usuarios/*/estado").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/usuarios/*/pedidos").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/usuarios/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/usuarios/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/usuarios/*/restore").hasRole("ADMIN")
-
-                // Orders - admin read all / write delete
+                // Orders
                 .requestMatchers(HttpMethod.GET, "/api/pedidos").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/estado").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/pedidos/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/restore").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/pedidos/*/hard").hasRole("ADMIN")
 
-                // Reviews - admin write delete
+                // Reviews
+                .requestMatchers(HttpMethod.GET, "/api/resenas").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/resenas/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/resenas/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/resenas/*/restore").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/resenas/*/hard").hasRole("ADMIN")
 
-                // Purchases - admin only
-                .requestMatchers(HttpMethod.POST, "/api/compras/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/api/compras/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/compras/*/soft-delete").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/api/compras/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/api/compras/*/restore").hasRole("ADMIN")
+                // Purchases
+                .requestMatchers("/api/compras/**").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
             )
