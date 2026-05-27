@@ -111,16 +111,18 @@ public class CourseService {
     }
 
     private CourseResponse toResponse(Course course) {
+        String imagenUrl = course.getImagenes() != null && !course.getImagenes().isEmpty()
+            ? course.getImagenes().get(0) : null;
         return new CourseResponse(
             course.getId(),
             course.getNombre(),
             course.getDescripcion(),
             course.getDescripcionLarga(),
             course.getPrecio(),
+            imagenUrl,
             course.getIdCategoria(),
             course.getHoras(),
-            course.getAutor(),
-            course.getImagenes()
+            course.getAutor()
         );
     }
 }

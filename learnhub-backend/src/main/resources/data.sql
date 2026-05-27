@@ -28,11 +28,11 @@ INSERT INTO curso_imagenes (id, curso_id, url) VALUES (5, 5, '/uploads/cursos/py
 ALTER TABLE curso_imagenes ALTER COLUMN id RESTART WITH 6;
 
 -- Usuarios (passwords bcrypt: "admin123" y "cliente123")
-INSERT INTO usuarios (id, nombre, apellidos, email, password_hash, rol, estado, fecha_alta, deleted)
+INSERT INTO usuarios (id, nombre, apellidos, email, password, rol, estado, fecha_alta, deleted)
 VALUES (1, 'Raul', 'Cobaltt', 'admin@gmail.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'ADMIN', 'ACTIVO', '2026-01-10', false);
-INSERT INTO usuarios (id, nombre, apellidos, email, password_hash, rol, estado, fecha_alta, deleted)
+INSERT INTO usuarios (id, nombre, apellidos, email, password, rol, estado, fecha_alta, deleted)
 VALUES (2, 'Daria', 'Koba', 'daria@gmail.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENTE', 'ACTIVO', '2026-02-15', false);
-INSERT INTO usuarios (id, nombre, apellidos, email, password_hash, rol, estado, fecha_alta, deleted)
+INSERT INTO usuarios (id, nombre, apellidos, email, password, rol, estado, fecha_alta, deleted)
 VALUES (3, 'John', 'Perez', 'john@gmail.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'CLIENTE', 'ACTIVO', '2026-03-01', false);
 ALTER TABLE usuarios ALTER COLUMN id RESTART WITH 4;
 
