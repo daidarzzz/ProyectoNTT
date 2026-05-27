@@ -41,6 +41,39 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
+
+
+                // Users
+                .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+
+                // Courses
+                .requestMatchers(HttpMethod.POST, "/api/cursos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/cursos/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/cursos/**").hasRole("ADMIN")
+
+                // Categories
+                .requestMatchers(HttpMethod.POST, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/categorias/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/categorias/**").hasRole("ADMIN")
+
+                // Orders
+                .requestMatchers(HttpMethod.GET, "/api/pedidos").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/estado").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/soft-delete").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/pedidos/*/restore").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/pedidos/*/hard").hasRole("ADMIN")
+
+                // Reviews
+                .requestMatchers(HttpMethod.GET, "/api/resenas").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/resenas/*/soft-delete").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/resenas/*/restore").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/resenas/*/hard").hasRole("ADMIN")
+
+                // Purchases
+                .requestMatchers("/api/compras/**").hasRole("ADMIN")
+
+
+
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
