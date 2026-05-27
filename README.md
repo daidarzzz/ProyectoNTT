@@ -1,4 +1,10 @@
 # ProyectoNTT
+# Arranque backend
+Debes usar jdk 17
+
+El puerto 8080 debe estar disponible
+
+Una vez se cumple lo anterior, ejecutar LearnHubApplication
 
 # Arranque frontend
 Acceder a la carpeta webApp desde el IDE
