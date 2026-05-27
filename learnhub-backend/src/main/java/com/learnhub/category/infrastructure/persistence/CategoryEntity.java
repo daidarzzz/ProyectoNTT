@@ -16,6 +16,9 @@ public class CategoryEntity {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public CategoryEntity() {}
 
     public Long getId() { return id; }
@@ -26,4 +29,7 @@ public class CategoryEntity {
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

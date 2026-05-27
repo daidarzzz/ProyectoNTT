@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [RouterLink, FormsModule, MatIconModule],
+  imports: [RouterLink, ReactiveFormsModule, MatIconModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -16,15 +16,21 @@ export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
+  private fb = inject(FormBuilder);
 
-  email = '';
-  password = '';
-  hidePassword = true;
+  protected hidePassword = true;
+
+  protected loginForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
 
   onSubmit(): void {
-    if (!this.email || !this.password) return;
+    if (this.loginForm.invalid) return;
 
-    this.auth.login(this.email, this.password).subscribe(user => {
+    const { email, password } = this.loginForm.getRawValue();
+
+    this.auth.login(email, password).subscribe(user => {
       if (user) {
         this.snackBar.open(`Bienvenido, ${user.nombre}!`, 'OK', { duration: 2000 });
         this.router.navigate(['/']);

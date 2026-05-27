@@ -17,6 +17,10 @@ spring:
       enabled: true
       path: /h2-console
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     defer-datasource-initialization: true
     hibernate:
@@ -26,6 +30,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
 
 app:
   jwt:

@@ -4,7 +4,7 @@ import com.learnhub.user.domain.User;
 import com.learnhub.user.domain.UserRole;
 import com.learnhub.user.domain.UserStatus;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "usuarios")
@@ -23,7 +23,7 @@ public class UserEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -35,7 +35,10 @@ public class UserEntity {
     private UserStatus estado;
 
     @Column(name = "fecha_alta", nullable = false, updatable = false)
-    private LocalDateTime fechaAlta;
+    private LocalDate fechaAlta;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     public UserEntity() {}
 
@@ -60,6 +63,9 @@ public class UserEntity {
     public UserStatus getEstado() { return estado; }
     public void setEstado(UserStatus estado) { this.estado = estado; }
 
-    public LocalDateTime getFechaAlta() { return fechaAlta; }
-    public void setFechaAlta(LocalDateTime fechaAlta) { this.fechaAlta = fechaAlta; }
+    public LocalDate getFechaAlta() { return fechaAlta; }
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

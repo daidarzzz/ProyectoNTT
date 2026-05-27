@@ -1,57 +1,68 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, delay, tap } from 'rxjs';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
-
-export interface AuthResponse {
-  token: string;
-  user: User;
-}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private apiUrl = '/api/auth';
+  private readonly STORAGE_KEY = 'learnhub_user';
 
   currentUser = signal<User | null>(null);
 
+  private mockUsers: User[] = [
+    { id: 1, nombre: 'Admin', apellidos: 'Sistema', email: 'admin@learnhub.com', rol: 'admin', estado: 'activo', password: 'admin123' },
+    { id: 2, nombre: 'Daria', apellidos: 'Koba', email: 'daria@gmail.com', rol: 'cliente', estado: 'activo', password: '123456' },
+  ];
+
   constructor(private http: HttpClient) {
-    const stored = localStorage.getItem('learnhub_user');
+    const stored = localStorage.getItem(this.STORAGE_KEY);
     if (stored) {
       this.currentUser.set(JSON.parse(stored));
     }
   }
 
-  login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password } as LoginRequest).pipe(
-      tap(res => {
-        localStorage.setItem('learnhub_token', res.token);
-        localStorage.setItem('learnhub_user', JSON.stringify(res.user));
-        this.currentUser.set(res.user);
-      })
-    );
+  login(email: string, password: string): Observable<User | null> {
+    const user = this.mockUsers.find(u => u.email === email && u.password === password) || null;
+    if (user) {
+      const { password: _, ...safeUser } = user;
+      return of(safeUser as User).pipe(
+        delay(500),
+        tap(u => {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(u));
+          this.currentUser.set(u);
+        })
+      );
+    }
+    return of(null).pipe(delay(500));
   }
 
-  register(data: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, data).pipe(
-      tap(res => {
-        localStorage.setItem('learnhub_token', res.token);
-        localStorage.setItem('learnhub_user', JSON.stringify(res.user));
-        this.currentUser.set(res.user);
+  register(data: RegisterRequest): Observable<User> {
+    const newUser: User = {
+      id: this.mockUsers.length + 1,
+      nombre: data.nombre,
+      apellidos: data.apellidos,
+      email: data.email,
+      rol: 'cliente',
+      estado: 'activo',
+      fecha_alta: new Date().toISOString(),
+    };
+    this.mockUsers.push({ ...newUser, password: data.password });
+    return of(newUser).pipe(
+      delay(500),
+      tap(u => {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(u));
+        this.currentUser.set(u);
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem('learnhub_token');
-    localStorage.removeItem('learnhub_user');
+    localStorage.removeItem(this.STORAGE_KEY);
     this.currentUser.set(null);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('learnhub_token');
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('learnhub_token');
+    return this.currentUser() !== null;
   }
 }

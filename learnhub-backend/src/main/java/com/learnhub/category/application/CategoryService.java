@@ -1,6 +1,7 @@
 package com.learnhub.category.application;
 
 import com.learnhub.category.application.dto.CategoryResponse;
+import com.learnhub.category.application.dto.CreateCategoryRequest;
 import com.learnhub.category.domain.Category;
 import com.learnhub.category.domain.CategoryRepository;
 import com.learnhub.shared.domain.exception.ResourceNotFoundException;
@@ -25,10 +26,63 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
+    public List<CategoryResponse> findAllIncludingDeleted() {
+        return categoryRepository.findAllIncludingDeleted().stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public CategoryResponse findById(Long id) {
         var category = categoryRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
         return toResponse(category);
+    }
+
+    @Transactional(readOnly = true)
+    public CategoryResponse findByIdIncludingDeleted(Long id) {
+        var category = categoryRepository.findByIdIncludingDeleted(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
+        return toResponse(category);
+    }
+
+    public CategoryResponse create(CreateCategoryRequest request) {
+        var category = new Category(request.nombre(), request.descripcion());
+        return toResponse(categoryRepository.save(category));
+    }
+
+    public CategoryResponse update(Long id, CreateCategoryRequest request) {
+        var category = categoryRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Categoría", id));
+        category.setNombre(request.nombre());
+        category.setDescripcion(request.descripcion());
+        return toResponse(categoryRepository.save(category));
+    }
+
+    public void delete(Long id) {
+        if (categoryRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.deleteById(id);
+    }
+
+    public void softDelete(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.softDeleteById(id);
+    }
+
+    public void hardDelete(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.hardDeleteById(id);
+    }
+
+    public void restore(Long id) {
+        if (categoryRepository.findByIdIncludingDeleted(id).isEmpty()) {
+            throw new ResourceNotFoundException("Categoría", id);
+        }
+        categoryRepository.restoreById(id);
     }
 
     private CategoryResponse toResponse(Category category) {

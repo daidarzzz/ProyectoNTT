@@ -1,7 +1,6 @@
 package com.learnhub.user.domain;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.LocalDate;
 
 public class User {
 
@@ -12,7 +11,7 @@ public class User {
     private String password;
     private UserRole rol;
     private UserStatus estado;
-    private LocalDateTime fechaAlta;
+    private LocalDate fechaAlta;
 
     public User() {}
 
@@ -23,7 +22,7 @@ public class User {
         this.password = password;
         this.rol = rol;
         this.estado = UserStatus.ACTIVO;
-        this.fechaAlta = LocalDateTime.now();
+        this.fechaAlta = LocalDate.now();
     }
 
     public Long getId() { return id; }
@@ -47,6 +46,6 @@ public class User {
     public UserStatus getEstado() { return estado; }
     public void setEstado(UserStatus estado) { this.estado = estado; }
 
-    public LocalDateTime getFechaAlta() { return fechaAlta; }
-    public void setFechaAlta(LocalDateTime fechaAlta) { this.fechaAlta = fechaAlta; }
+    public LocalDate getFechaAlta() { return fechaAlta; }
+    public void setFechaAlta(LocalDate fechaAlta) { this.fechaAlta = fechaAlta; }
 }

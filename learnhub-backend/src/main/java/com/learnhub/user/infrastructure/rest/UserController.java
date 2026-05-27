@@ -1,9 +1,17 @@
 package com.learnhub.user.infrastructure.rest;
 
 import com.learnhub.user.application.UserService;
+import com.learnhub.user.application.dto.ActualizarPerfilRequest;
+import com.learnhub.user.application.dto.CambiarPasswordRequest;
+import com.learnhub.user.application.dto.EstadoRequest;
 import com.learnhub.user.application.dto.UserResponse;
+import com.learnhub.user.domain.User;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -15,8 +23,41 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> findAll(
+            @RequestParam(defaultValue = "false") boolean incluirEliminados) {
+        if (incluirEliminados) {
+            return ResponseEntity.ok(userService.findAllIncludingDeleted());
+        }
+        return ResponseEntity.ok(userService.findAll());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
+    }
+
+    @PutMapping("/{id}/estado")
+    public ResponseEntity<UserResponse> updateEstado(@PathVariable Long id,
+                                                      @Valid @RequestBody EstadoRequest request) {
+        return ResponseEntity.ok(userService.updateEstado(id, request));
+    }
+
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        userService.softDelete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> hardDelete(@PathVariable Long id) {
+        userService.hardDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Void> restore(@PathVariable Long id) {
+        userService.restore(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -30,6 +30,9 @@ public class PurchaseEntity {
     @Column(name = "estado_pago", nullable = false)
     private PaymentStatus estadoPago;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public PurchaseEntity() {}
 
     public Long getId() { return id; }
@@ -49,4 +52,7 @@ public class PurchaseEntity {
 
     public PaymentStatus getEstadoPago() { return estadoPago; }
     public void setEstadoPago(PaymentStatus estadoPago) { this.estadoPago = estadoPago; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }

@@ -2,6 +2,8 @@ package com.learnhub.course.infrastructure.persistence;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "cursos")
@@ -12,7 +14,7 @@ public class CourseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String titulo;
+    private String nombre;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descripcion;
@@ -23,9 +25,6 @@ public class CourseEntity {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
 
-    @Column(name = "imagen_url")
-    private String imagenUrl;
-
     @Column(name = "id_categoria", nullable = false)
     private Long idCategoria;
 
@@ -35,13 +34,19 @@ public class CourseEntity {
     @Column(nullable = false)
     private String autor;
 
+    @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseImageEntity> imagenes = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     public CourseEntity() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getTitulo() { return titulo; }
-    public void setTitulo(String titulo) { this.titulo = titulo; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
@@ -52,9 +57,6 @@ public class CourseEntity {
     public BigDecimal getPrecio() { return precio; }
     public void setPrecio(BigDecimal precio) { this.precio = precio; }
 
-    public String getImagenUrl() { return imagenUrl; }
-    public void setImagenUrl(String imagenUrl) { this.imagenUrl = imagenUrl; }
-
     public Long getIdCategoria() { return idCategoria; }
     public void setIdCategoria(Long idCategoria) { this.idCategoria = idCategoria; }
 
@@ -63,4 +65,10 @@ public class CourseEntity {
 
     public String getAutor() { return autor; }
     public void setAutor(String autor) { this.autor = autor; }
+
+    public List<CourseImageEntity> getImagenes() { return imagenes; }
+    public void setImagenes(List<CourseImageEntity> imagenes) { this.imagenes = imagenes; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }
