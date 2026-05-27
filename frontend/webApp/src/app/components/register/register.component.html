@@ -56,17 +56,17 @@
             [type]="hidePassword ? 'password' : 'text'"
             [(ngModel)]="password"
             name="password"
-            placeholder="Mínimo 4 caracteres"
+            placeholder="Mínimo 6 caracteres"
             required
             #passInput="ngModel"
-            minlength="4"
+            minlength="6"
           >
           <button type="button" class="toggle-pass" (click)="hidePassword = !hidePassword" tabindex="-1">
             <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
         @if (passInput.invalid && passInput.touched) {
-          <span class="input-error">Mínimo 4 caracteres</span>
+          <span class="input-error">Mínimo 6 caracteres</span>
         }
       </div>
 

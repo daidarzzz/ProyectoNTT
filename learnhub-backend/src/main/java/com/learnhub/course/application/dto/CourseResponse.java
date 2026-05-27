@@ -1,15 +1,16 @@
 package com.learnhub.course.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 public record CourseResponse(
-    Long id,
+    @JsonProperty("id_curso") Long id,
     String titulo,
     String descripcion,
-    String descripcionLarga,
+    @JsonProperty("descripcion_larga") String descripcionLarga,
     BigDecimal precio,
-    String imagenUrl,
-    Long idCategoria,
+    @JsonProperty("imagen_url") String imagenUrl,
+    @JsonProperty("id_categoria") Long idCategoria,
     Integer horas,
     String autor
 ) {}

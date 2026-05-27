@@ -4,7 +4,7 @@ export interface Compra {
   id_curso: number;
   precio_pagado: number;
   fecha_compra: string;
-  estado_pago: 'completado' | 'pendiente' | 'rechazado';
+  estado_pago: string;
 }
 
 export interface CompraRequest {

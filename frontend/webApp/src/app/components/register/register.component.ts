@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -31,26 +32,29 @@ export class RegisterComponent {
 
   get formValid(): boolean {
     return !!(
-      this.nombre &&
-      this.apellidos &&
-      this.email &&
-      this.password &&
-      this.password.length >= 4 &&
-      this.passwordsMatch
+      this.nombre && this.apellidos && this.email &&
+      this.password && this.password.length >= 6 && this.passwordsMatch
     );
   }
 
   onSubmit(): void {
     if (!this.formValid) return;
-
     this.auth.register({
       nombre: this.nombre,
       apellidos: this.apellidos,
       email: this.email,
       password: this.password,
-    }).subscribe(user => {
-      this.snackBar.open(`¡Cuenta creada! Bienvenido, ${user.nombre}`, 'OK', { duration: 3000 });
-      this.router.navigate(['/']);
+    }).subscribe({
+      next: (res) => {
+        this.snackBar.open(`¡Cuenta creada! Bienvenido, ${res.user.nombre}`, 'OK', { duration: 3000 });
+        this.router.navigate(['/']);
+      },
+      error: (err: HttpErrorResponse) => {
+        const msg = err.status === 409
+          ? 'Este email ya está registrado.'
+          : 'Error del servidor. Intenta más tarde.';
+        this.snackBar.open(msg, 'Cerrar', { duration: 3000 });
+      }
     });
   }
 }
