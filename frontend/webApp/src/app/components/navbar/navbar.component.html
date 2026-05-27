@@ -27,8 +27,8 @@
       <a routerLink="/carrito" class="nav-link cart-link" (click)="menuOpen.set(false)">
         <span class="cart-icon-wrapper">
           <mat-icon>shopping_cart</mat-icon>
-          @if (carrito.count() > 0) {
-            <span class="cart-badge">{{ carrito.count() }}</span>
+          @if (carrito.cartCount() > 0) {
+            <span class="cart-badge">{{ carrito.cartCount() }}</span>
           }
         </span>
         Carrito

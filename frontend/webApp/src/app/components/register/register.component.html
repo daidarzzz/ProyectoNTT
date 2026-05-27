@@ -9,90 +9,103 @@
       <p class="auth-subtitle">Únete a LearnHub y empieza a aprender</p>
     </div>
 
-    <form class="auth-form" (ngSubmit)="onSubmit()">
+    <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="name-row">
         <div class="input-group">
-          <label class="input-label">Nombre</label>
+          <label class="input-label" for="nombre">Nombre</label>
           <div class="input-wrapper">
             <mat-icon class="input-icon">person</mat-icon>
-            <input class="glass-input" type="text" [(ngModel)]="nombre" name="nombre" placeholder="Nombre" required #nombreInput="ngModel">
+            <input id="nombre" class="glass-input" type="text" formControlName="nombre" placeholder="Nombre">
           </div>
+          @if (registerForm.controls.nombre.touched && registerForm.controls.nombre.hasError('required')) {
+            <span class="input-error">El nombre es obligatorio</span>
+          }
         </div>
 
         <div class="input-group">
-          <label class="input-label">Apellidos</label>
+          <label class="input-label" for="apellidos">Apellidos</label>
           <div class="input-wrapper">
-            <input class="glass-input" type="text" [(ngModel)]="apellidos" name="apellidos" placeholder="Apellidos" required>
+            <input id="apellidos" class="glass-input" type="text" formControlName="apellidos" placeholder="Apellidos">
           </div>
+          @if (registerForm.controls.apellidos.touched && registerForm.controls.apellidos.hasError('required')) {
+            <span class="input-error">Los apellidos son obligatorios</span>
+          }
         </div>
       </div>
 
       <div class="input-group">
-        <label class="input-label">Email</label>
+        <label class="input-label" for="email">Email</label>
         <div class="input-wrapper">
           <mat-icon class="input-icon">email</mat-icon>
           <input
+            id="email"
             class="glass-input"
             type="email"
-            [(ngModel)]="email"
-            name="email"
+            formControlName="email"
             placeholder="tu@email.com"
-            required
-            pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}"
-            #emailInput="ngModel"
           >
         </div>
-        @if (emailInput.invalid && emailInput.touched) {
-          <span class="input-error">Ingresa un email válido</span>
+        @if (registerForm.controls.email.touched) {
+          @if (registerForm.controls.email.hasError('required')) {
+            <span class="input-error">El email es obligatorio</span>
+          }
+          @if (registerForm.controls.email.hasError('email')) {
+            <span class="input-error">Ingresa un email válido</span>
+          }
         }
       </div>
 
       <div class="input-group">
-        <label class="input-label">Contraseña</label>
+        <label class="input-label" for="password">Contraseña</label>
         <div class="input-wrapper">
           <mat-icon class="input-icon">lock</mat-icon>
           <input
+            id="password"
             class="glass-input"
             [type]="hidePassword ? 'password' : 'text'"
-            [(ngModel)]="password"
-            name="password"
-            placeholder="Mínimo 4 caracteres"
-            required
-            #passInput="ngModel"
-            minlength="4"
+            formControlName="password"
+            placeholder="Mínimo 6 caracteres"
           >
           <button type="button" class="toggle-pass" (click)="hidePassword = !hidePassword" tabindex="-1">
             <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        @if (passInput.invalid && passInput.touched) {
-          <span class="input-error">Mínimo 4 caracteres</span>
+        @if (registerForm.controls.password.touched) {
+          @if (registerForm.controls.password.hasError('required')) {
+            <span class="input-error">La contraseña es obligatoria</span>
+          }
+          @if (registerForm.controls.password.hasError('minlength')) {
+            <span class="input-error">Mínimo 6 caracteres</span>
+          }
         }
       </div>
 
       <div class="input-group">
-        <label class="input-label">Confirmar Contraseña</label>
+        <label class="input-label" for="confirmPassword">Confirmar Contraseña</label>
         <div class="input-wrapper">
           <mat-icon class="input-icon">lock</mat-icon>
           <input
+            id="confirmPassword"
             class="glass-input"
             [type]="hideConfirm ? 'password' : 'text'"
-            [(ngModel)]="confirmPassword"
-            name="confirmPassword"
+            formControlName="confirmPassword"
             placeholder="Repite la contraseña"
-            required
-            #confirmInput="ngModel"
           >
           <button type="button" class="toggle-pass" (click)="hideConfirm = !hideConfirm" tabindex="-1">
             <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </div>
-        @if (confirmInput.touched && !passwordsMatch) {
+        @if (registerForm.controls.confirmPassword.touched) {
+          @if (registerForm.controls.confirmPassword.hasError('required')) {
+            <span class="input-error">Confirma tu contraseña</span>
+          }
+        }
+        @if (registerForm.controls.confirmPassword.touched && registerForm.hasError('passwordsMismatch')) {
           <span class="input-error">Las contraseñas no coinciden</span>
         }
       </div>
 
-      <button type="submit" class="btn-glass-primary auth-submit" [disabled]="!formValid">
+      <button type="submit" class="btn-glass-primary auth-submit" [disabled]="registerForm.invalid">
         <mat-icon>person_add</mat-icon>
         Crear Cuenta
       </button>
