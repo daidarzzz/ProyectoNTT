@@ -33,7 +33,11 @@ export class LoginComponent {
 
     this.auth.login(email, password).subscribe({
       next: (res) => {
-        this.snackBar.open(`Bienvenido, ${res.user.nombre}!`, 'OK', { duration: 2000 });
+        if (!res) {
+          this.snackBar.open('Credenciales incorrectas', 'OK', { duration: 2000 });
+          return;
+        }
+        this.snackBar.open(`Bienvenido, ${res.nombre}!`, 'OK', { duration: 2000 });
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
